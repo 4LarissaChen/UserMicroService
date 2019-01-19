@@ -1,0 +1,62 @@
+{
+  "_meta": {
+    "sources": [
+      "loopback/common/models",
+      "loopback/server/models",
+      "../common/models",
+      "./models",
+      "../common/models/datamodel",
+      "../common/models/apimodel",
+      "../common/models/apimodel/apiSpec/updateCustomerInfo/request",
+      "../common/models/apimodel/apiSpec/sendMessage/response"
+    ],
+    "mixins": [
+      "loopback/common/mixins",
+      "loopback/server/mixins",
+      "../common/mixins",
+      "./mixins"
+    ]
+  },
+  "User": {
+    "dataSource": "db",
+    "public": false
+  },
+  "AccessToken": {
+    "dataSource": "mongo",
+    "public": false
+  },
+  "ACL": {
+    "dataSource": "mongo",
+    "public": false
+  },
+  "RoleMapping": {
+    "dataSource": "mongo",
+    "public": false,
+    "options": {
+      "strictObjectIDCoercion": true
+    }
+  },
+  "Role": {
+    "dataSource": "mongo",
+    "public": false
+  },
+
+  "CustomerAPI": {
+    "dataSource": "db",
+    "public": true
+  },
+
+
+  "Customer": {
+    "dataSource": "mongo",
+    "public": true
+  },
+  "UpdateCusomerInfoRequest": {
+    "dataSource": "db",
+    "public": true
+  },
+  "SendMessageResponse": {
+    "dataSource": "db",
+    "public": false
+  }
+}

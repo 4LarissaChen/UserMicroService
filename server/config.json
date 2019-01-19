@@ -1,0 +1,36 @@
+{
+  "restApiRoot": "/api",
+  "host": "0.0.0.0",
+  "port": 4001,
+  "remoting": {
+    "context": false,
+    "rest": {
+      "handleErrors": false,
+      "normalizeHttpPath": false,
+      "xml": false
+    },
+    "json": {
+      "strict": false,
+      "limit": "10mb"
+    },
+    "urlencoded": {
+      "extended": true,
+      "limit": "10mb"
+    },
+    "cors": false
+  },
+  "features": {
+    "SMSConfig": {
+      "accessKey": {
+        "accessKeyId": "LTAIHBlHjdK1vWV0",
+        "secretAccessKey": "cSrp6SlKRd4JbBRerlQuXvToTc6JRM"
+      },
+      "messageTemplate":{
+        "login": "SMS_154425487",
+        "changePwd": "SMS_154425484",
+        "register": "SMS_154425485",
+        "idVerification":"SMS_154425488"
+      }
+    }
+  }
+}
