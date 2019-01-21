@@ -5,10 +5,12 @@
       "loopback/server/models",
       "../common/models",
       "./models",
+      "./models/response",
       "../common/models/datamodel",
-      "../common/models/apimodel",
-      "../common/models/apimodel/apiSpec/updateCustomerInfo/request",
-      "../common/models/apimodel/apiSpec/sendMessage/response"
+      "../common/models/apimodel/customer",
+      "../common/models/apimodel/customer/apiSpec/updateCustomerInfo/request",
+      "../common/models/apimodel/customer/apiSpec/sendMessage/response",
+      "../common/models/apimodel/customer/apiSpec/common/response"
     ],
     "mixins": [
       "loopback/common/mixins",
@@ -17,39 +19,15 @@
       "./mixins"
     ]
   },
-  "User": {
-    "dataSource": "db",
-    "public": false
-  },
-  "AccessToken": {
-    "dataSource": "mongo",
-    "public": false
-  },
-  "ACL": {
-    "dataSource": "mongo",
-    "public": false
-  },
-  "RoleMapping": {
-    "dataSource": "mongo",
-    "public": false,
-    "options": {
-      "strictObjectIDCoercion": true
-    }
-  },
-  "Role": {
-    "dataSource": "mongo",
-    "public": false
-  },
 
   "CustomerAPI": {
     "dataSource": "db",
     "public": true
   },
 
-
   "Customer": {
     "dataSource": "mongo",
-    "public": true
+    "public": false
   },
   "UpdateCusomerInfoRequest": {
     "dataSource": "db",
@@ -57,6 +35,10 @@
   },
   "SendMessageResponse": {
     "dataSource": "db",
-    "public": false
+    "public": true
+  },
+  "IsSuccessResponse": {
+    "dataSource": "db",
+    "public": true
   }
 }

@@ -1,5 +1,5 @@
 'use strict'
-var app = require('../../../../server/server.js');
+var app = require('../../../../../server/server.js');
 var moment = require('moment');
 var Promise = require('bluebird');
 
