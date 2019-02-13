@@ -31,7 +31,7 @@ module.exports = function (CustomerAPI) {
     description: "Customer login.",
     accepts: [{ arg: 'tel', type: 'string', required: true, description: "User telephone number", http: { source: 'query' } },
     { arg: 'code', type: 'string', required: true, description: "Verification code", http: { source: 'query' } }],
-    returns: { arg: 'resp', type: 'isSuccessResponse', description: '', root: true },
+    returns: { arg: 'resp', type: 'IsSuccessResponse', description: '', root: true },
     http: { path: '/customer/login', verb: 'put', status: 200, errorStatus: 500 }
   });
 
