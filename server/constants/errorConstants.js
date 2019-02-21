@@ -20,4 +20,6 @@ exports.SMS_SERVICE_ERROR_CODE = {
   "isv.PARAM_LENGTH_LIMIT": "参数超出长度限制",
   "isv.PARAM_NOT_SUPPORT_URL": "不支持URL",
   "isv.AMOUNT_NOT_ENOUGH": "账户余额不足"
-}
+};
+
+exports.ERROR_MESSAGE_NO_MODEL_FOUND = "The target %s is not found";  // e.g. The Customer is not found

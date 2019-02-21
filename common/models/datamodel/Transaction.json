@@ -1,0 +1,40 @@
+{
+	"name": "Transaction",
+	"base": "PersistedModel",
+	"strict": true,
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"_id": {
+			"type": "string",
+			"id": true,
+			"required": true
+		},
+		"ownerId": {
+			"type": "string",
+			"required": true
+		},
+		"orderId": {
+			"type": "string",
+			"required": true
+		},
+		"storeId": {
+			"type": "string",
+			"required": true
+		},
+		"status": {
+			"type": "string",
+			"required": true
+		},
+		"createTime": {
+			"type": "string",
+			"required": true
+		}
+	},
+	"validations": [],
+	"relations": {},
+	"acls": [],
+	"methods": {}
+}
