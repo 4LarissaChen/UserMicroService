@@ -4,7 +4,7 @@
     "connector": "memory"
   },
   "mongo": {
-    "host": "45.78.69.132",
+    "host": "47.102.96.102",
     "port": 27017,
     "database": "butchart",
     "password": "Aq1sw2de",
