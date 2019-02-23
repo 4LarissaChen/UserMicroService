@@ -17,11 +17,12 @@ module.exports = function (TransactionAPI) {
     description: "Create transaction.",
     accepts: [{ arg: 'customerId', type: 'string', required: true, description: "Customer Id", http: { source: 'path' } },
     { arg: 'orderId', type: 'string', required: true, description: "Order Id", http: { source: 'path' } },
-    { arg: 'storeId', type: 'string', required: true, description: "Store Id", http: { source: 'path' } }],
+    { arg: 'storeId', type: 'string', required: true, description: "Store Id", http: { source: 'path' } },
+    { arg: 'addressId', type: 'string', required: true, description: "Address Id", http: { source: 'path' } }],
     returns: { arg: 'resp', type: 'IsSuccessResponse', description: '', root: true },
-    http: { path: '/customer/:customerId/order/:orderId/store/:storeId', verb: 'put', status: 200, errorStatus: 500 }
+    http: { path: '/customer/:customerId/order/:orderId/store/:storeId/address/:addressId', verb: 'put', status: 200, errorStatus: 500 }
   });
-  TransactionAPI.createTransaction = function (customerId, orderId, storeId) {
+  TransactionAPI.createTransaction = function (customerId, orderId, storeId, addressId) {
     let Transaction = app.models.Transaction;
     let Customer = app.models.Customer;
     let transaction = {
@@ -29,6 +30,7 @@ module.exports = function (TransactionAPI) {
       owner: customerId,
       orderId: orderId,
       store: storeId,
+      address: addressId,
       createTime: moment().utc().format(),
       status: 'unpayed'
     };
@@ -60,10 +62,23 @@ module.exports = function (TransactionAPI) {
   TransactionAPI.remoteMethod('getCustomerOwnedTransactions', {
     description: "Get customer owend transactions.",
     accepts: { arg: 'customerId', type: 'string', required: true, description: "Customer Id", http: { source: 'path' } },
-    returns: { arg: 'resp', type: 'IsSuccessResponse', description: '', root: true },
-    http: { path: '/transaction/:transactionId/order/getCustomerOwnedTransactions', verb: 'put', status: 200, errorStatus: 500 }
+    returns: { arg: 'resp', type: ['Transaction'], description: '', root: true },
+    http: { path: '/transaction/:transactionId/getCustomerOwnedTransactions', verb: 'get', status: 200, errorStatus: 500 }
   });
-  TransactionAPI.getCustomerOwnedTransactions = function(customerId){
-    
+  TransactionAPI.getCustomerOwnedTransactions = function (customerId) {
+    var transaction = app.models.Transaction;
+    return transaction.find({ owner: customerId });
+  }
+
+  TransactionAPI.remoteMethod('searchTransaction', {
+    description: "Get customer owend transactions.",
+    accepts: [{ arg: 'customerId', type: 'string', required: true, description: "Customer Id", http: { source: 'path' } },
+    { arg: 'filter', type: 'SearchTransactionRequest', required: true, description: "Filter", http: { source: 'body' } }],
+    returns: { arg: 'resp', type: ['Transaction'], description: '', root: true },
+    http: { path: '/transaction/:transactionId/searchTransaction', verb: 'get', status: 200, errorStatus: 500 }
+  });
+  TransactionAPI.searchTransaction = function (customerId, filter) {
+    var transaction = app.models.Transaction;
+    return transaction.find(filter);
   }
 }

@@ -8,10 +8,12 @@
       "./models/response",
       "../common/models/datamodel",
       "../common/models/apimodel/customer",
+      "../common/models/apimodel/transaction",
       "../common/models/apimodel/customer/apiSpec/updateCustomerInfo/request",
       "../common/models/apimodel/customer/apiSpec/sendMessage/response",
       "../common/models/apimodel/customer/apiSpec/common/response",
-      "../common/models/apimodel/transaction/apiSpec/common/response"
+      "../common/models/apimodel/transaction/apiSpec/common/response",
+      "../common/models/apimodel/transaction/apiSpec/serachTransaction/request"
     ],
     "mixins": [
       "loopback/common/mixins",
@@ -25,6 +27,10 @@
     "dataSource": "db",
     "public": true
   },
+  "TransactionAPI": {
+    "dataSource": "db",
+    "public": true
+  },
 
   "Transaction": {
     "dataSource": "mongo",
@@ -35,6 +41,10 @@
     "public": false
   },
   "UpdateCusomerInfoRequest": {
+    "dataSource": "db",
+    "public": true
+  },
+  "SearchTransactionRequest": {
     "dataSource": "db",
     "public": true
   },
