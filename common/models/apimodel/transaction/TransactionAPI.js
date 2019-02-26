@@ -8,8 +8,6 @@ var Promise = require('bluebird');
 var moment = require('moment');
 var errorConstants = require('../../../../server/constants/errorConstants.js');
 var promiseUtils = require('../../../../server//utils/promiseUtils.js');
-
-var TransactionService = require('./internalService/TransactionService.js');
 module.exports = function (TransactionAPI) {
 
   TransactionAPI.remoteMethod('createTransaction', {

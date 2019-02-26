@@ -13,7 +13,8 @@
       "../common/models/apimodel/customer/apiSpec/sendMessage/response",
       "../common/models/apimodel/customer/apiSpec/common/response",
       "../common/models/apimodel/transaction/apiSpec/common/response",
-      "../common/models/apimodel/transaction/apiSpec/serachTransaction/request"
+      "../common/models/apimodel/transaction/apiSpec/serachTransaction/request",
+      "../common/models/apimodel/transaction/apiSpec/searchTransaction/request"
     ],
     "mixins": [
       "loopback/common/mixins",

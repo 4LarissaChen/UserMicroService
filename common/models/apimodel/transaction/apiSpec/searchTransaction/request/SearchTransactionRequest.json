@@ -16,10 +16,10 @@
     "status": {
       "type": "string"
     },
-    "fromDate": {
+    "fromDate":{
       "type": "string"
     },
-    "toDate": {
+    "toDate":{
       "type": "string"
     }
   },
