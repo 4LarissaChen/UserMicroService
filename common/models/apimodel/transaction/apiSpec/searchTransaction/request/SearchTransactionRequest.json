@@ -7,10 +7,19 @@
   },
   "properties": {
     "id": false,
+    "customerId": {
+      "type": "string"
+    },
+    "storeId": {
+      "type": "string"
+    },
     "status": {
       "type": "string"
     },
-    "createDate":{
+    "fromDate": {
+      "type": "string"
+    },
+    "toDate": {
       "type": "string"
     }
   },

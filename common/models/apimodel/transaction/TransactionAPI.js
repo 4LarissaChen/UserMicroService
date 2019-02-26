@@ -1,4 +1,3 @@
-
 'use strict';
 var apiUtils = require('../../../../server/utils/apiUtils.js');
 var app = require('../../../../server/server.js');
@@ -27,7 +26,7 @@ module.exports = function (TransactionAPI) {
     let Customer = app.models.Customer;
     let transaction = {
       _id: apiUtils.generateShortId("transaction"),
-      owner: customerId,
+      customerId: customerId,
       orderId: orderId,
       store: storeId,
       address: addressId,
@@ -67,15 +66,14 @@ module.exports = function (TransactionAPI) {
   });
   TransactionAPI.getCustomerOwnedTransactions = function (customerId) {
     var transaction = app.models.Transaction;
-    return transaction.find({ owner: customerId });
+    return transaction.find({ customerId: customerId });
   }
 
   TransactionAPI.remoteMethod('searchTransaction', {
     description: "Get customer owend transactions.",
-    accepts: [{ arg: 'customerId', type: 'string', required: true, description: "Customer Id", http: { source: 'path' } },
-    { arg: 'filter', type: 'SearchTransactionRequest', required: true, description: "Filter", http: { source: 'body' } }],
+    accepts: [{ arg: 'filter', type: 'SearchTransactionRequest', required: true, description: "Filter", http: { source: 'body' } }],
     returns: { arg: 'resp', type: ['Transaction'], description: '', root: true },
-    http: { path: '/transaction/:transactionId/searchTransaction', verb: 'get', status: 200, errorStatus: 500 }
+    http: { path: '/transaction/:transactionId/searchTransaction', verb: 'post', status: 200, errorStatus: 500 }
   });
   TransactionAPI.searchTransaction = function (customerId, filter) {
     var transaction = app.models.Transaction;
