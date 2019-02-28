@@ -14,21 +14,19 @@ module.exports = function (TransactionAPI) {
     description: "Create transaction.",
     accepts: [{ arg: 'customerId', type: 'string', required: true, description: "Customer Id", http: { source: 'path' } },
     { arg: 'orderId', type: 'string', required: true, description: "Order Id", http: { source: 'path' } },
-    { arg: 'storeId', type: 'string', required: true, description: "Store Id", http: { source: 'path' } },
     { arg: 'addressId', type: 'string', required: true, description: "Address Id", http: { source: 'path' } }],
     returns: { arg: 'resp', type: 'IsSuccessResponse', description: '', root: true },
     http: { path: '/customer/:customerId/order/:orderId/store/:storeId/address/:addressId', verb: 'put', status: 200, errorStatus: 500 }
   });
-  TransactionAPI.createTransaction = function (customerId, orderId, storeId, addressId) {
+  TransactionAPI.createTransaction = function (customerId, orderId, addressId) {
     let Transaction = app.models.Transaction;
     let Customer = app.models.Customer;
     let transaction = {
       _id: apiUtils.generateShortId("transaction"),
       customerId: customerId,
       orderId: orderId,
-      store: storeId,
       address: addressId,
-      createTime: moment().utc().format(),
+      createDate: moment().utc().format(),
       status: 'unpayed'
     };
     return Customer.count({ _id: customerId }).then(result => {
@@ -40,7 +38,7 @@ module.exports = function (TransactionAPI) {
   }
 
   TransactionAPI.remoteMethod('changeStatus', {
-    description: "Create transaction.",
+    description: "Change transaction status.",
     accepts: [{ arg: 'transactionId', type: 'string', required: true, description: "Transaction Id", http: { source: 'path' } },
     { arg: 'status', type: 'string', required: true, description: "transaction status", http: { source: 'query' } }],
     returns: { arg: 'resp', type: 'IsSuccessResponse', description: '', root: true },
@@ -50,7 +48,7 @@ module.exports = function (TransactionAPI) {
     let Transaction = app.models.Transaction;
     return Transaction.findOne({ _id: transactionId }).then(result => {
       if (!result) throw apiUtils.build404Error(errorConstants.ERROR_MESSAGE_NO_MODEL_FOUND, "Transaction");
-      return promiseUtils.mongoNativeUpdatePromise("Transaction", { _id: transactionId }, { $set: { status: status } });
+      return promiseUtils.mongoNativeUpdatePromise("Transaction", { _id: transactionId }, { $set: { status: status, payedDate: moment().utc().format() } });
     }).then(() => {
       return { isSuccess: true };
     })
@@ -60,21 +58,46 @@ module.exports = function (TransactionAPI) {
     description: "Get customer owend transactions.",
     accepts: { arg: 'customerId', type: 'string', required: true, description: "Customer Id", http: { source: 'path' } },
     returns: { arg: 'resp', type: ['Transaction'], description: '', root: true },
-    http: { path: '/transaction/:transactionId/getCustomerOwnedTransactions', verb: 'get', status: 200, errorStatus: 500 }
+    http: { path: '/customerId/:customerId/getCustomerOwnedTransactions', verb: 'get', status: 200, errorStatus: 500 }
   });
   TransactionAPI.getCustomerOwnedTransactions = function (customerId) {
-    var transaction = app.models.Transaction;
-    return transaction.find({ customerId: customerId });
+    var Transaction = app.models.Transaction;
+    return Transaction.find({ customerId: customerId }).then(result => {
+      return result.sort((a, b) => a.createDate <= b.createDate);
+    })
+  }
+
+  TransactionAPI.remoteMethod('getTransactionById', {
+    description: "Get transaction by Id.",
+    accepts: [{ arg: 'customerId', type: 'string', required: true, description: "Customer Id", http: { source: 'path' } },
+    { arg: 'transactionId', type: 'string', required: true, description: "Transaction Id", http: { source: 'path' } }],
+    returns: { arg: 'resp', type: ['Transaction'], description: '', root: true },
+    http: { path: '/customerId/:customerId/transactionId/:transactionId/getTransactionById', verb: 'get', status: 200, errorStatus: 500 }
+  });
+  TransactionAPI.getTransactionById = function (customerId, transactionId) {
+    var Transaction = app.models.Transaction;
+    return Transaction.findOne({ transactionId: transactionId });
   }
 
   TransactionAPI.remoteMethod('searchTransaction', {
-    description: "Get customer owend transactions.",
-    accepts: [{ arg: 'filter', type: 'SearchTransactionRequest', required: true, description: "Filter", http: { source: 'body' } }],
+    description: "Search transactions by conditions.",
+    accepts: [{ arg: 'filter', type: 'SearchTransactionRequest', required: true, description: "Conditions", http: { source: 'body' } }],
     returns: { arg: 'resp', type: ['Transaction'], description: '', root: true },
-    http: { path: '/transaction/:transactionId/searchTransaction', verb: 'post', status: 200, errorStatus: 500 }
+    http: { path: '/transaction/searchTransaction', verb: 'put', status: 200, errorStatus: 500 }
   });
-  TransactionAPI.searchTransaction = function (customerId, filter) {
-    var transaction = app.models.Transaction;
-    return transaction.find(filter);
+  TransactionAPI.searchTransaction = function (filter) {
+    var Transaction = app.models.Transaction;
+    var conditions = [];
+    if (filter.customerId !== "")
+      conditions.push({ customerId: filter.customerId });
+    if (filter.status !== "")
+      conditions.push({ status: filter.status });
+    if (filter.fromDate !== "")
+      conditions.push({ createDate: { "$gt": filter.fromDate } });
+    if (filter.toDate !== "")
+      conditions.push({ createDate: { "$lt": filter.toDate } })
+    return Transaction.find({ where: { "$and": conditions } }).then(result => {
+      return result.sort((a, b) => { a.createDate <= b.createDate });
+    })
   }
 }

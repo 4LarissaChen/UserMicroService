@@ -9,12 +9,15 @@
       "../common/models/datamodel",
       "../common/models/apimodel/customer",
       "../common/models/apimodel/transaction",
+      "../common/models/apimodel/address",
       "../common/models/apimodel/customer/apiSpec/updateCustomerInfo/request",
       "../common/models/apimodel/customer/apiSpec/sendMessage/response",
       "../common/models/apimodel/customer/apiSpec/common/response",
       "../common/models/apimodel/transaction/apiSpec/common/response",
       "../common/models/apimodel/transaction/apiSpec/serachTransaction/request",
-      "../common/models/apimodel/transaction/apiSpec/searchTransaction/request"
+      "../common/models/apimodel/transaction/apiSpec/searchTransaction/request",
+      "../common/models/apimodel/address/apiSpec/addAddress/request",
+      "../common/models/apimodel/address/apiSpec/modifyAddress/request"
     ],
     "mixins": [
       "loopback/common/mixins",
@@ -23,7 +26,6 @@
       "./mixins"
     ]
   },
-
   "CustomerAPI": {
     "dataSource": "db",
     "public": true
@@ -32,6 +34,11 @@
     "dataSource": "db",
     "public": true
   },
+  "AddressAPI": {
+    "dataSource": "db",
+    "public": true
+  },
+
 
   "Transaction": {
     "dataSource": "mongo",
@@ -41,6 +48,12 @@
     "dataSource": "mongo",
     "public": false
   },
+  "Address": {
+    "dataSource": "mongo",
+    "public": false
+  },
+
+
   "UpdateCusomerInfoRequest": {
     "dataSource": "db",
     "public": true
@@ -49,6 +62,16 @@
     "dataSource": "db",
     "public": true
   },
+  "AddAddressRequest": {
+    "dataSource": "db",
+    "public": true
+  },
+  "ModifyAddressRequest": {
+    "dataSource": "db",
+    "public": true
+  },
+
+
   "SendMessageResponse": {
     "dataSource": "db",
     "public": true

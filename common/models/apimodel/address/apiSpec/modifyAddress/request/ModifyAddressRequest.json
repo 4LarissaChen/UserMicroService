@@ -4,8 +4,8 @@
   "base": "Model",
   "strict": true,
   "properties": {
-    "id": false,
-		"customerId": {
+		"id": false,
+		"_id": {
 			"type": "string",
 			"required": true
 		},

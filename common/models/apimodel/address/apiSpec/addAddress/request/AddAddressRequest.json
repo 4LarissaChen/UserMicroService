@@ -5,10 +5,6 @@
   "strict": true,
   "properties": {
     "id": false,
-		"customerId": {
-			"type": "string",
-			"required": true
-		},
 		"address": {
 			"type": "string",
 			"required": true

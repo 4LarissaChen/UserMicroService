@@ -20,10 +20,6 @@
 			"type": "string",
 			"required": true
 		},
-		"storeId": {
-			"type": "string",
-			"required": true
-		},
 		"status": {
 			"type": "string",
 			"required": true
@@ -35,6 +31,9 @@
 		"address": {
 			"type": "string",
 			"required": true
+		},
+		"payedDate": {
+			"type": "string"
 		}
 	},
 	"validations": [],
