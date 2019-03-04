@@ -7,12 +7,12 @@
       "./models",
       "./models/response",
       "../common/models/datamodel",
-      "../common/models/apimodel/customer",
+      "../common/models/apimodel/butchartUser",
       "../common/models/apimodel/transaction",
       "../common/models/apimodel/address",
-      "../common/models/apimodel/customer/apiSpec/updateCustomerInfo/request",
-      "../common/models/apimodel/customer/apiSpec/sendMessage/response",
-      "../common/models/apimodel/customer/apiSpec/common/response",
+      "../common/models/apimodel/butchartUser/apiSpec/updateUserInfo/request",
+      "../common/models/apimodel/butchartUser/apiSpec/sendMessage/response",
+      "../common/models/apimodel/butchartUser/apiSpec/common/response",
       "../common/models/apimodel/transaction/apiSpec/common/response",
       "../common/models/apimodel/transaction/apiSpec/serachTransaction/request",
       "../common/models/apimodel/transaction/apiSpec/searchTransaction/request",
@@ -26,7 +26,7 @@
       "./mixins"
     ]
   },
-  "CustomerAPI": {
+  "ButchartUserAPI": {
     "dataSource": "db",
     "public": true
   },
@@ -38,13 +38,17 @@
     "dataSource": "db",
     "public": true
   },
+  "UserProfile": {
+    "dataSource": "db",
+    "public": true
+  },
 
 
   "Transaction": {
     "dataSource": "mongo",
     "public": false
   },
-  "Customer": {
+  "ButchartUser": {
     "dataSource": "mongo",
     "public": false
   },
@@ -54,7 +58,7 @@
   },
 
 
-  "UpdateCusomerInfoRequest": {
+  "UpdateUserInfoRequest": {
     "dataSource": "db",
     "public": true
   },

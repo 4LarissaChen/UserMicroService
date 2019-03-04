@@ -15,23 +15,23 @@ var addressService = new AddressService();
 module.exports = function (AddressAPI) {
   AddressAPI.remoteMethod('addAddress', {
     description: "Add shipping address.",
-    accepts: [{ arg: 'customerId', type: 'string', required: true, description: "Customer Id", http: { source: 'path' } },
+    accepts: [{ arg: 'userId', type: 'string', required: true, description: "User Id", http: { source: 'path' } },
     { arg: 'addressData', type: 'AddAddressRequest', required: true, description: "Address infomation.", http: { source: 'body' } }],
     returns: { arg: 'resp', type: 'IsSuccessResponse', description: '', root: true },
-    http: { path: '/address/customerId/:customerId/addAddress', verb: 'post', status: 200, errorStatus: 500 }
+    http: { path: '/address/userId/:userId/addAddress', verb: 'post', status: 200, errorStatus: 500 }
   });
-  AddressAPI.addAddress = function (customerId, addressData) {
+  AddressAPI.addAddress = function (userId, addressData) {
     var Address = loopback.findModel("Address");
     let addressInfo = {
       _id: apiUtils.generateShortId("address"),
-      customerId: customerId,
+      userId: userId,
       address: addressData.address,
       tel: addressData.tel,
       postcode: addressData.postcode,
       isDefault: addressData.isDefault
     }
     return Address.upsert(addressInfo).then(() => {
-      return addressService.changeDefaultAddress(customerId, addressInfo);
+      return addressService.changeDefaultAddress(userId, addressInfo);
     }).then(() => {
       return { isSuccess: true };
     })
@@ -39,12 +39,12 @@ module.exports = function (AddressAPI) {
 
   AddressAPI.remoteMethod('modifyAddress', {
     description: "Modify shipping address.",
-    accepts: [{ arg: 'customerId', type: 'string', required: true, description: "Customer Id", http: { source: 'path' } },
+    accepts: [{ arg: 'userId', type: 'string', required: true, description: "User Id", http: { source: 'path' } },
     { arg: 'addressData', type: 'ModifyAddressRequest', required: true, description: "Address infomation.", http: { source: 'body' } }],
     returns: { arg: 'resp', type: 'IsSuccessResponse', description: '', root: true },
-    http: { path: '/address/customerId/:customerId/modifyAddress', verb: 'put', status: 200, errorStatus: 500 }
+    http: { path: '/address/userId/:userId/modifyAddress', verb: 'put', status: 200, errorStatus: 500 }
   });
-  AddressAPI.modifyAddress = function (customerId, addressData) {
+  AddressAPI.modifyAddress = function (userId, addressData) {
     return promiseUtils.mongoNativeUpdatePromise("Address", { _id: addressData._id }, {
       $set: {
         address: addressData.address,
@@ -53,7 +53,7 @@ module.exports = function (AddressAPI) {
         isDefault: addressData.isDefault
       }
     }).then(() => {
-      return addressService.changeDefaultAddress(customerId, addressData);
+      return addressService.changeDefaultAddress(userId, addressData);
     }).then(() => {
       return { isSuccess: true };
     })
@@ -61,12 +61,12 @@ module.exports = function (AddressAPI) {
 
   AddressAPI.remoteMethod('getAddress', {
     description: "Get shipping address.",
-    accepts: { arg: 'customerId', type: 'string', required: true, description: "Customer Id", http: { source: 'path' } },
+    accepts: { arg: 'userId', type: 'string', required: true, description: "User Id", http: { source: 'path' } },
     returns: { arg: 'resp', type: 'IsSuccessResponse', description: '', root: true },
-    http: { path: '/address/customerId/:customerId/getAddress', verb: 'get', status: 200, errorStatus: 500 }
+    http: { path: '/address/userId/:userId/getAddress', verb: 'get', status: 200, errorStatus: 500 }
   });
-  AddressAPI.getAddress = function (customerId) {
-    return addressService.getAddress(customerId);
+  AddressAPI.getAddress = function (userId) {
+    return addressService.getAddress(userId);
   }
 
   AddressAPI.remoteMethod('deleteAddress', {

@@ -1,5 +1,5 @@
 {
-  "name": "customer-microservice",
+  "name": "butchartuser-microservice",
   "version": "1.0.0",
   "main": "server/server.js",
   "engines": {
@@ -34,5 +34,5 @@
     "url": ""
   },
   "license": "UNLICENSED",
-  "description": "CustomerMicroService"
+  "description": "ButchartUserMicroService"
 }

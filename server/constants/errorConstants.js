@@ -22,7 +22,7 @@ exports.SMS_SERVICE_ERROR_CODE = {
   "isv.AMOUNT_NOT_ENOUGH": "账户余额不足"
 };
 
-exports.ERROR_MESSAGE_NO_MODEL_FOUND = "The target %s is not found";  // e.g. The Customer is not found
+exports.ERROR_MESSAGE_NO_MODEL_FOUND = "The target %s is not found";  // e.g. The User is not found
 
 /**
  * API Response Error Code

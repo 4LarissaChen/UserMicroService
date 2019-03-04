@@ -1,5 +1,5 @@
 {
-	"name": "Customer",
+	"name": "ButchartUser",
 	"base": "User",
 	"strict": true,
 	"idInjection": true,
@@ -47,10 +47,24 @@
 		"registerDate": {
 			"type": "date",
 			"required": false
+		},
+		"userProfile": {
+			"type": "UserProfile",
+			"required": false
 		}
 	},
 	"validations": [],
-	"relations": {},
+	"relations": {
+		"userProfile": {
+			"type": "embedsOne",
+			"model": "UserProfile",
+			"property": "userProfile",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		}
+	},
 	"acls": [],
 	"methods": {}
 }

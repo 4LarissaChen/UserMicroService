@@ -12,25 +12,25 @@ module.exports = function (TransactionAPI) {
 
   TransactionAPI.remoteMethod('createTransaction', {
     description: "Create transaction.",
-    accepts: [{ arg: 'customerId', type: 'string', required: true, description: "Customer Id", http: { source: 'path' } },
+    accepts: [{ arg: 'userId', type: 'string', required: true, description: "ButchartUser Id", http: { source: 'path' } },
     { arg: 'orderId', type: 'string', required: true, description: "Order Id", http: { source: 'path' } },
     { arg: 'addressId', type: 'string', required: true, description: "Address Id", http: { source: 'path' } }],
     returns: { arg: 'resp', type: 'IsSuccessResponse', description: '', root: true },
-    http: { path: '/customer/:customerId/order/:orderId/store/:storeId/address/:addressId', verb: 'put', status: 200, errorStatus: 500 }
+    http: { path: '/userId/:userId/order/:orderId/store/:storeId/address/:addressId', verb: 'put', status: 200, errorStatus: 500 }
   });
-  TransactionAPI.createTransaction = function (customerId, orderId, addressId) {
+  TransactionAPI.createTransaction = function (userId, orderId, addressId) {
     let Transaction = app.models.Transaction;
-    let Customer = app.models.Customer;
+    let ButchartUser = app.models.ButchartUser;
     let transaction = {
       _id: apiUtils.generateShortId("transaction"),
-      customerId: customerId,
+      userId: userId,
       orderId: orderId,
       address: addressId,
       createDate: moment().utc().format(),
       status: 'unpayed'
     };
-    return Customer.count({ _id: customerId }).then(result => {
-      if (result == 0) throw apiUtils.build404Error(errorConstants.ERROR_MESSAGE_NO_MODEL_FOUND, "Customer");
+    return ButchartUser.count({ _id: userId }).then(result => {
+      if (result == 0) throw apiUtils.build404Error(errorConstants.ERROR_MESSAGE_NO_MODEL_FOUND, "ButchartUser");
       return Transaction.upsert(transaction);
     }).then(() => {
       return { isSuccess: true }
@@ -54,27 +54,27 @@ module.exports = function (TransactionAPI) {
     })
   }
 
-  TransactionAPI.remoteMethod('getCustomerOwnedTransactions', {
-    description: "Get customer owend transactions.",
-    accepts: { arg: 'customerId', type: 'string', required: true, description: "Customer Id", http: { source: 'path' } },
+  TransactionAPI.remoteMethod('getButchartUserOwnedTransactions', {
+    description: "Get ButchartUser owend transactions.",
+    accepts: { arg: 'userId', type: 'string', required: true, description: "ButchartUser Id", http: { source: 'path' } },
     returns: { arg: 'resp', type: ['Transaction'], description: '', root: true },
-    http: { path: '/customerId/:customerId/getCustomerOwnedTransactions', verb: 'get', status: 200, errorStatus: 500 }
+    http: { path: '/userId/:userId/getButchartUserOwnedTransactions', verb: 'get', status: 200, errorStatus: 500 }
   });
-  TransactionAPI.getCustomerOwnedTransactions = function (customerId) {
+  TransactionAPI.getButchartUserOwnedTransactions = function (userId) {
     var Transaction = app.models.Transaction;
-    return Transaction.find({ customerId: customerId }).then(result => {
+    return Transaction.find({ userId: userId }).then(result => {
       return result.sort((a, b) => a.createDate <= b.createDate);
     })
   }
 
   TransactionAPI.remoteMethod('getTransactionById', {
     description: "Get transaction by Id.",
-    accepts: [{ arg: 'customerId', type: 'string', required: true, description: "Customer Id", http: { source: 'path' } },
+    accepts: [{ arg: 'userId', type: 'string', required: true, description: "ButchartUser Id", http: { source: 'path' } },
     { arg: 'transactionId', type: 'string', required: true, description: "Transaction Id", http: { source: 'path' } }],
     returns: { arg: 'resp', type: ['Transaction'], description: '', root: true },
-    http: { path: '/customerId/:customerId/transactionId/:transactionId/getTransactionById', verb: 'get', status: 200, errorStatus: 500 }
+    http: { path: '/userId/:userId/transactionId/:transactionId/getTransactionById', verb: 'get', status: 200, errorStatus: 500 }
   });
-  TransactionAPI.getTransactionById = function (customerId, transactionId) {
+  TransactionAPI.getTransactionById = function (userId, transactionId) {
     var Transaction = app.models.Transaction;
     return Transaction.findOne({ transactionId: transactionId });
   }
@@ -88,8 +88,8 @@ module.exports = function (TransactionAPI) {
   TransactionAPI.searchTransaction = function (filter) {
     var Transaction = app.models.Transaction;
     var conditions = [];
-    if (filter.customerId !== "")
-      conditions.push({ customerId: filter.customerId });
+    if (filter.userId !== "")
+      conditions.push({ userId: filter.userId });
     if (filter.status !== "")
       conditions.push({ status: filter.status });
     if (filter.fromDate !== "")

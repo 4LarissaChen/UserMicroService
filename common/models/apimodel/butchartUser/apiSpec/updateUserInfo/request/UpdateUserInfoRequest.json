@@ -1,5 +1,5 @@
 {
-  "name": "UpdateCusomerInfoRequest",
+  "name": "UpdateUserInfoRequest",
   "idInjection": false,
   "base": "Model",
   "strict": true,

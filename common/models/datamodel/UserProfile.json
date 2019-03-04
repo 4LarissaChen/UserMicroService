@@ -1,22 +1,17 @@
 {
-  "name": "SearchTransactionRequest",
+  "name": "UserProfile",
   "base": "Model",
+  "strict": true,
   "idInjection": false,
   "options": {
     "validateUpsert": true
   },
   "properties": {
     "id": false,
-    "userId": {
+    "defaultAddress": {
       "type": "string"
     },
-    "status": {
-      "type": "string"
-    },
-    "fromDate":{
-      "type": "string"
-    },
-    "toDate":{
+    "accountLevel": {
       "type": "string"
     }
   },
