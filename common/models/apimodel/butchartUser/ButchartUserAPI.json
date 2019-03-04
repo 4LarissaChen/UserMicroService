@@ -1,5 +1,5 @@
 {
-  "name": "ButchartUserAPI",
+  "name": "UserAPI",
   "base": "Model",
   "idInjection": true,
   "strict": true,

@@ -8,18 +8,18 @@ var loopback = require('loopback');
 var Promise = require('bluebird');
 var moment = require('moment');
 
-var butchartUserService = require('./internalService/ButchartUserService.js');
+var userService = require('./internalService/UserService.js');
 var messageUtils = require('../../../../server/utils/messageUtils.js');
-module.exports = function (ButchartUserAPI) {
+module.exports = function (UserAPI) {
 
-  ButchartUserAPI.remoteMethod('sendMessage', {
+  UserAPI.remoteMethod('sendMessage', {
     description: "Get message verification code.",
     accepts: [{ arg: 'tel', type: 'string', required: true, description: "User telephone number", http: { source: 'path' } },
     { arg: 'operation', type: 'string', required: true, description: "login/register/changePwd/idVerification", http: { source: 'query' } }],
     returns: { arg: 'resp', type: 'SendMessageResponse', description: '', root: true },
-    http: { path: '/butchartuser/:tel/sendMessage', verb: 'put', status: 200, errorStatus: 500 }
+    http: { path: '/butchartuser/:tel/sendMessage', verb: 'post', status: 200, errorStatus: 500 }
   });
-  ButchartUserAPI.sendMessage = function (tel, operation, cb) {
+  UserAPI.sendMessage = function (tel, operation, cb) {
     let code = ("00000" + Math.floor(Math.random() * 1000000)).substr(-6);
     return messageUtils.sendMessage(tel, code, operation).then(result => {
       let resp = { code: code };
@@ -27,19 +27,19 @@ module.exports = function (ButchartUserAPI) {
     });
   };
 
-  ButchartUserAPI.remoteMethod('login', {
-    description: "ButchartUser login.",
+  UserAPI.remoteMethod('login', {
+    description: "User login.",
     accepts: [{ arg: 'tel', type: 'string', required: true, description: "User telephone number", http: { source: 'query' } },
     { arg: 'code', type: 'string', required: true, description: "Verification code", http: { source: 'query' } }],
     returns: { arg: 'resp', type: 'IsSuccessResponse', description: '', root: true },
     http: { path: '/butchartuser/login', verb: 'put', status: 200, errorStatus: 500 }
   });
 
-  ButchartUserAPI.login = function (tel, code) {
-    let ButchartUser = app.models.ButchartUser;
+  UserAPI.login = function (tel, code) {
+    let User = app.models.User;
     let butchartuser;
     let now = moment().utc().format();
-    return ButchartUser.find({ where: { tel: tel } }).then(result => {
+    return User.find({ where: { tel: tel } }).then(result => {
       if (result.length == 0)
         butchartuser = {
           _id: tel,
@@ -58,7 +58,7 @@ module.exports = function (ButchartUserAPI) {
       return messageUtils.querySentMessage(tel, code);
     }).then(() => {
       butchartuser.lastLoginDate = moment.utc().format();
-      return ButchartUser.upsert(butchartuser);
+      return User.upsert(butchartuser);
     }).then(() => {
       return { isSuccess: true };
     }).catch(err => {
@@ -66,7 +66,7 @@ module.exports = function (ButchartUserAPI) {
     })
   }
 
-  ButchartUserAPI.remoteMethod('setDefaultAddress', {
+  UserAPI.remoteMethod('setDefaultAddress', {
     description: "Set default address Id.",
     accepts: [{ arg: 'butchartuserId', type: 'string', required: true, description: "User telephone number", http: { source: 'path' } },
     { arg: 'addressId', type: 'string', required: true, description: "Default address Id", http: { source: 'path' } }],

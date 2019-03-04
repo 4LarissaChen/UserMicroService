@@ -12,7 +12,7 @@ module.exports = function (TransactionAPI) {
 
   TransactionAPI.remoteMethod('createTransaction', {
     description: "Create transaction.",
-    accepts: [{ arg: 'userId', type: 'string', required: true, description: "ButchartUser Id", http: { source: 'path' } },
+    accepts: [{ arg: 'userId', type: 'string', required: true, description: "User Id", http: { source: 'path' } },
     { arg: 'orderId', type: 'string', required: true, description: "Order Id", http: { source: 'path' } },
     { arg: 'addressId', type: 'string', required: true, description: "Address Id", http: { source: 'path' } }],
     returns: { arg: 'resp', type: 'IsSuccessResponse', description: '', root: true },
@@ -54,13 +54,13 @@ module.exports = function (TransactionAPI) {
     })
   }
 
-  TransactionAPI.remoteMethod('getButchartUserOwnedTransactions', {
-    description: "Get ButchartUser owend transactions.",
-    accepts: { arg: 'userId', type: 'string', required: true, description: "ButchartUser Id", http: { source: 'path' } },
+  TransactionAPI.remoteMethod('getUserOwnedTransactions', {
+    description: "Get user owend transactions.",
+    accepts: { arg: 'userId', type: 'string', required: true, description: "User Id", http: { source: 'path' } },
     returns: { arg: 'resp', type: ['Transaction'], description: '', root: true },
-    http: { path: '/userId/:userId/getButchartUserOwnedTransactions', verb: 'get', status: 200, errorStatus: 500 }
+    http: { path: '/userId/:userId/getUserOwnedTransactions', verb: 'get', status: 200, errorStatus: 500 }
   });
-  TransactionAPI.getButchartUserOwnedTransactions = function (userId) {
+  TransactionAPI.getUserOwnedTransactions = function (userId) {
     var Transaction = app.models.Transaction;
     return Transaction.find({ userId: userId }).then(result => {
       return result.sort((a, b) => a.createDate <= b.createDate);
@@ -69,7 +69,7 @@ module.exports = function (TransactionAPI) {
 
   TransactionAPI.remoteMethod('getTransactionById', {
     description: "Get transaction by Id.",
-    accepts: [{ arg: 'userId', type: 'string', required: true, description: "ButchartUser Id", http: { source: 'path' } },
+    accepts: [{ arg: 'userId', type: 'string', required: true, description: "User Id", http: { source: 'path' } },
     { arg: 'transactionId', type: 'string', required: true, description: "Transaction Id", http: { source: 'path' } }],
     returns: { arg: 'resp', type: ['Transaction'], description: '', root: true },
     http: { path: '/userId/:userId/transactionId/:transactionId/getTransactionById', verb: 'get', status: 200, errorStatus: 500 }
