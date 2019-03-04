@@ -22,16 +22,18 @@ module.exports = function (AddressAPI) {
   });
   AddressAPI.addAddress = function (userId, addressData) {
     var Address = loopback.findModel("Address");
+    let isDefault = addressData.isDefault;
     let addressInfo = {
       _id: apiUtils.generateShortId("address"),
       userId: userId,
       address: addressData.address,
       tel: addressData.tel,
       postcode: addressData.postcode,
-      isDefault: addressData.isDefault
     }
     return Address.upsert(addressInfo).then(() => {
-      return addressService.changeDefaultAddress(userId, addressInfo);
+      if (isDefault == true)
+        return addressService.changeDefaultAddress(userId, addressInfo._id);
+      return Promise.resolve();
     }).then(() => {
       return { isSuccess: true };
     })
@@ -49,11 +51,12 @@ module.exports = function (AddressAPI) {
       $set: {
         address: addressData.address,
         tel: addressData.tel,
-        postcode: addressData.postcode,
-        isDefault: addressData.isDefault
+        postcode: addressData.postcode
       }
     }).then(() => {
-      return addressService.changeDefaultAddress(userId, addressData);
+      if (addressData.isDefault == true)
+        return addressService.changeDefaultAddress(userId, addressData._id);
+      return Promise.resolve();
     }).then(() => {
       return { isSuccess: true };
     })

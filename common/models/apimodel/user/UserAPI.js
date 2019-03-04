@@ -36,16 +36,16 @@ module.exports = function (UserAPI) {
   });
 
   UserAPI.login = function (tel, code) {
-    let User = app.models.User;
-    let butchartuser;
+    let ButchartUser = app.models.ButchartUser;
+    let user;
     let now = moment().utc().format();
-    return User.find({ where: { tel: tel } }).then(result => {
+    return ButchartUser.find({ where: { tel: tel } }).then(result => {
       if (result.length == 0)
-        butchartuser = {
+      user = {
           _id: tel,
           tel: tel,
           email: "",
-          password: "ButChart",
+          password: "Butchart",
           lastLoginDate: now,
           registerDate: now,
           userProfile: {
@@ -54,11 +54,11 @@ module.exports = function (UserAPI) {
           }
         }
       else
-        butchartuser = result[0];
+      user = result[0];
       return messageUtils.querySentMessage(tel, code);
     }).then(() => {
-      butchartuser.lastLoginDate = moment.utc().format();
-      return User.upsert(butchartuser);
+      user.lastLoginDate = moment.utc().format();
+      return ButchartUser.upsert(user);
     }).then(() => {
       return { isSuccess: true };
     }).catch(err => {

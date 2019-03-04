@@ -11,15 +11,8 @@ class AddressService {
     return Address.find({ userId: userId });
   };
 
-  changeDefaultAddress(userId, addressData) {
-    if (addressData.isDefault !== true)
-      return Promise.resolve();
-    return this.getAddress(userId).then(result => {
-      let changeDefaultAddr = result.find(r => r.isDefault === true && r._id !== addressData._id);
-      if (!changeDefaultAddr)
-        return Promise.resolve();
-      return promiseUtils.mongoNativeUpdatePromise("Address", { _id: changeDefaultAddr._id }, { $set: { isDefault: false } });
-    });
+  changeDefaultAddress(userId, addressId) {
+    return promiseUtils.mongoNativeUpdatePromise("ButchartUser", { _id: userId }, { $set: { "userProfile.defaultAddress": addressId } });
   }
 
 }
