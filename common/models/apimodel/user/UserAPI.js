@@ -7,7 +7,7 @@ var nodeUtil = require('util');
 var loopback = require('loopback');
 var Promise = require('bluebird');
 var moment = require('moment');
-
+var errorConstants = require('../../../../server/constants/errorConstants.js');
 var userService = require('./internalService/UserService.js');
 var messageUtils = require('../../../../server/utils/messageUtils.js');
 module.exports = function (UserAPI) {
@@ -32,16 +32,19 @@ module.exports = function (UserAPI) {
     accepts: [{ arg: 'tel', type: 'string', required: true, description: "User telephone number", http: { source: 'query' } },
     { arg: 'code', type: 'string', required: true, description: "Verification code", http: { source: 'query' } }],
     returns: { arg: 'resp', type: 'IsSuccessResponse', description: '', root: true },
-    http: { path: '/butchartuser/login', verb: 'put', status: 200, errorStatus: 500 }
+    http: { path: '/butchartuser/login', verb: 'post', status: 200, errorStatus: [500] }
   });
 
   UserAPI.login = function (tel, code) {
+    let telReg = /^1\d{10}$/;
+    if (!telReg.test(tel))
+      throw apiUtils.build500Error(errorConstants.ERROR_NAME_INVALID_INPUT_PARAMETERS, "Phone number is invalid!");
+    let now = moment().utc().format();
     let ButchartUser = app.models.ButchartUser;
     let user;
-    let now = moment().utc().format();
     return ButchartUser.find({ where: { tel: tel } }).then(result => {
       if (result.length == 0)
-      user = {
+        user = {
           _id: tel,
           tel: tel,
           email: "",
@@ -54,24 +57,24 @@ module.exports = function (UserAPI) {
           }
         }
       else
-      user = result[0];
+        user = result[0];
       return messageUtils.querySentMessage(tel, code);
     }).then(() => {
       user.lastLoginDate = moment.utc().format();
       return ButchartUser.upsert(user);
     }).then(() => {
       return { isSuccess: true };
-    }).catch(err => {
-      return Promise.resolve(err);
     })
   }
 
-  UserAPI.remoteMethod('setDefaultAddress', {
-    description: "Set default address Id.",
-    accepts: [{ arg: 'butchartuserId', type: 'string', required: true, description: "User telephone number", http: { source: 'path' } },
-    { arg: 'addressId', type: 'string', required: true, description: "Default address Id", http: { source: 'path' } }],
-    returns: { arg: 'resp', type: 'IsSuccessResponse', description: '', root: true },
-    http: { path: '/butchartuser/:butchartuserId/address/:addressId', verb: 'put', status: 200, errorStatus: 500 }
+  UserAPI.remoteMethod('getUserInfo', {
+    description: "Get user information.",
+    accepts: { arg: 'userId', type: 'string', required: true, description: "User telephone number", http: { source: 'query' } },
+    returns: { arg: 'resp', type: 'ButchartUser', description: '', root: true },
+    http: { path: '/butchartuser/userId/:userId/getUserInfo', verb: 'get', status: 200, errorStatus: 500 }
   });
-
-};
+  UserAPI.getUserInfo = function (userId) {
+    let ButchartUser = app.models.ButchartUser;
+    return ButchartUser.find({ where: { _id: userId } }).catch(err => err);
+  }
+}; 

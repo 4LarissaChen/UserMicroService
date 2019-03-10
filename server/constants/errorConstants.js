@@ -37,3 +37,4 @@ exports.ERROR_CODE_INTERNAL_SERVER_ERROR = 500;
  * API Response Error Name
  */
 exports.ERROR_NAME_INVALID_INPUT_PARAMETERS = "Invalid Input Parameters";
+exports.ERROR_MESSAGE_NO_MODEL_FOUND = "The target %s is not found";   // e.g. The Architecture is not found

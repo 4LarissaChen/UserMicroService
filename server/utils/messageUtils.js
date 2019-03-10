@@ -4,7 +4,8 @@ var fs = require('fs');
 var moment = require('moment');
 var Promise = require('bluebird');
 var SMSClient = require('@alicloud/sms-sdk');
-var errorMessage = require('../constants/errorConstants.js');
+var errorConstants = require('../constants/errorConstants.js');
+var apiUtils = require('./apiUtils.js');
 var config = JSON.parse(fs.readFileSync(global.appRoot + 'server/config.json')).features.SMSConfig;
 
 var _getSMSClient = function () {
@@ -24,8 +25,8 @@ exports.sendMessage = function (tel, code, option) {
     if (Code === 'OK') {
       //处理返回参数
       return Promise.resolve();
-    } else if (errorMessage.SMS_SERVICE_ERROR_CODE[Code])
-      throw (new Error(errorMessage.SMS_SERVICE_ERROR_CODE[Code]));
+    } else if (errorConstants.SMS_SERVICE_ERROR_CODE[Code])
+      throw (new Error(errorConstants.SMS_SERVICE_ERROR_CODE[Code]));
     else
       return Promise.reject(err);
   })
@@ -42,6 +43,8 @@ exports.querySentMessage = function (tel, code) {
   }).then(res => {
     if (res.Code === 'OK') {
       //处理发送详情内容
+      if (res.SmsSendDetailDTOs.SmsSendDetailDTO.length == 0)
+        throw new Error('验证失败，请重新尝试！');
       if (res.SmsSendDetailDTOs.SmsSendDetailDTO[0].Content.indexOf(code) != -1)
         return Promise.resolve();
     }

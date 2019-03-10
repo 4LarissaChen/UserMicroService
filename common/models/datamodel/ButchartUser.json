@@ -36,10 +36,6 @@
 			"type": "date",
 			"required": false
 		},
-		"vipLevel": {
-			"type": "string",
-			"required": false
-		},
 		"lastLoginDate": {
 			"type": "date",
 			"required": false
@@ -55,7 +51,7 @@
 	},
 	"validations": [],
 	"relations": {
-		"userProfile": {
+		"relatedProfile": {
 			"type": "embedsOne",
 			"model": "UserProfile",
 			"property": "userProfile",
