@@ -17,7 +17,7 @@ module.exports = function (UserAPI) {
     accepts: [{ arg: 'tel', type: 'string', required: true, description: "User telephone number", http: { source: 'path' } },
     { arg: 'operation', type: 'string', required: true, description: "login/register/changePwd/idVerification", http: { source: 'query' } }],
     returns: { arg: 'resp', type: 'SendMessageResponse', description: '', root: true },
-    http: { path: '/butchartuser/:tel/sendMessage', verb: 'post', status: 200, errorStatus: 500 }
+    http: { path: '/user/:tel/sendMessage', verb: 'post', status: 200, errorStatus: 500 }
   });
   UserAPI.sendMessage = function (tel, operation, cb) {
     let code = ("00000" + Math.floor(Math.random() * 1000000)).substr(-6);
@@ -32,7 +32,7 @@ module.exports = function (UserAPI) {
     accepts: [{ arg: 'tel', type: 'string', required: true, description: "User telephone number", http: { source: 'query' } },
     { arg: 'code', type: 'string', required: true, description: "Verification code", http: { source: 'query' } }],
     returns: { arg: 'resp', type: 'IsSuccessResponse', description: '', root: true },
-    http: { path: '/butchartuser/login', verb: 'post', status: 200, errorStatus: [500] }
+    http: { path: '/user/login', verb: 'post', status: 200, errorStatus: [500] }
   });
 
   UserAPI.login = function (tel, code) {
