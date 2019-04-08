@@ -56,6 +56,10 @@
     "dataSource": "mongo",
     "public": false
   },
+  "ShoppingCartItem": {
+    "dataSource": "db",
+    "public": true
+  },
 
 
   "UpdateUserInfoRequest": {

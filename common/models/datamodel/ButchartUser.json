@@ -44,8 +44,8 @@
 			"type": "date",
 			"required": false
 		},
-		"userProfile": {
-			"type": "UserProfile",
+		"shoppingCart":{
+			"type": ["ShoppingCartItem"],
 			"required": false
 		}
 	},

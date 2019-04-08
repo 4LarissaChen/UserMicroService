@@ -8,8 +8,9 @@ var loopback = require('loopback');
 var Promise = require('bluebird');
 var moment = require('moment');
 var errorConstants = require('../../../../server/constants/errorConstants.js');
-var userService = require('./internalService/UserService.js');
+var UserService = require('./internalService/UserService.js');
 var messageUtils = require('../../../../server/utils/messageUtils.js');
+var promiseUtils = require('../../../../server/utils/promiseUtils.js');
 module.exports = function (UserAPI) {
 
   UserAPI.remoteMethod('sendMessage', {
@@ -31,7 +32,7 @@ module.exports = function (UserAPI) {
     description: "User login.",
     accepts: [{ arg: 'tel', type: 'string', required: true, description: "User telephone number", http: { source: 'query' } },
     { arg: 'code', type: 'string', required: true, description: "Verification code", http: { source: 'query' } }],
-    returns: { arg: 'resp', type: 'IsSuccessResponse', description: '', root: true },
+    returns: { arg: 'resp', type: 'ButchartUser', description: '', root: true },
     http: { path: '/user/login', verb: 'post', status: 200, errorStatus: [500] }
   });
 
@@ -39,32 +40,17 @@ module.exports = function (UserAPI) {
     let telReg = /^1\d{10}$/;
     if (!telReg.test(tel))
       throw apiUtils.build500Error(errorConstants.ERROR_NAME_INVALID_INPUT_PARAMETERS, "Phone number is invalid!");
-    let now = moment().utc().format();
     let ButchartUser = app.models.ButchartUser;
-    let user;
+    let userService = new UserService();
     return ButchartUser.find({ where: { tel: tel } }).then(result => {
       if (result.length == 0)
-        user = {
-          _id: tel,
-          tel: tel,
-          email: "",
-          password: "Butchart",
-          lastLoginDate: now,
-          registerDate: now,
-          userProfile: {
-            defaultAddress: "",
-            accountLevel: "0"
-          }
-        }
+        return userService.createUser(tel);
       else
-        user = result[0];
-      return messageUtils.querySentMessage(tel, code);
-    }).then(() => {
-      user.lastLoginDate = moment.utc().format();
-      return ButchartUser.upsert(user);
-    }).then(() => {
-      return { isSuccess: true };
-    })
+        return messageUtils.querySentMessage(tel, code).then(() => {
+          result[0].lastLoginDate = moment().local().format('YYYY-MM-DD HH:mm:ss');
+          return ButchartUser.upsert(result[0])
+        });
+    });
   }
 
   UserAPI.remoteMethod('getUserInfo', {
@@ -76,5 +62,71 @@ module.exports = function (UserAPI) {
   UserAPI.getUserInfo = function (userId) {
     let ButchartUser = app.models.ButchartUser;
     return ButchartUser.find({ where: { _id: userId } }).catch(err => err);
+  }
+
+  UserAPI.remoteMethod('addToShoppingList', {
+    description: "Get products by product series Id.",
+    accepts: [{ arg: 'userId', type: 'string', required: true, description: "User id", http: { source: 'path' } },
+    { arg: 'productId', type: 'string', required: true, description: "Product id", http: { source: 'path' } },
+    { arg: 'quantity', type: 'string', required: true, description: "Quantity", http: { source: 'query' } }],
+    returns: { arg: 'resp', type: 'IsSuccessResponse', description: 'is success or not', root: true },
+    http: { path: '/user/:userId/product/:productId/addToShoppingList', verb: 'post', status: 200, errorStatus: [500] }
+  });
+  UserAPI.addToShoppingList = function (userId, productId, quantity) {
+    let ButchartUser = app.models.ButchartUser;
+    let item = {};
+    return ButchartUser.find({ where: { _id: userId } }).then(result => {
+      if (result[0] && result[0].shoppingCart.length > 0)
+        result[0].shoppingCart.forEach(element => {
+          if (element.productId == productId) {
+            element.quantity += quantity;
+            item = element;
+          }
+        })
+      if (item.productId)
+        return promiseUtils.mongoNativeUpdatePromise('ButchartUser', { _id: userId }, { $set: { shoppingCart: result[0].shoppingCart } });
+      else
+        item = {
+          productId: productId,
+          quantity: quantity,
+          addDate: moment().local().format('YYYY-MM-DD HH:mm:ss')
+        }
+      return promiseUtils.mongoNativeUpdatePromise('ButchartUser', { _id: userId }, { $addToSet: { shoppingCart: item } });
+    }).then(() => {
+      return { isSuccess: true };
+    }).catch(err => {
+      throw err;
+    })
+  }
+
+  UserAPI.remoteMethod('updateShoppingList', {
+    description: "Get products by product series Id.",
+    accepts: [{ arg: 'userId', type: 'string', required: true, description: "User id", http: { source: 'path' } },
+    { arg: 'data', type: ['ShoppingCartItem'], required: true, description: "User id", http: { source: 'path' } }],
+    returns: { arg: 'resp', type: 'IsSuccessResponse', description: 'is success or not', root: true },
+    http: { path: '/workspace/user/:userId/updateShoppingList', verb: 'put', status: 200, errorStatus: [500] }
+  });
+  UserAPI.updateShoppingList = function (userId, data) {
+    let ButchartUser = app.models.ButchartUser;
+    return ButchartUser.find({ where: { _id: userId } }).then(resul => {
+      if (result.length == 0)
+        throw apiUtils.build404Error(nodeUtil.format(errorConstants.ERROR_MESSAGE_NO_MODEL_FOUND, 'ButchartUser'));
+      return promiseUtils.mongoNativeUpdatePromise('ButchartUser', { _id: userId }, { $set: { shoppingCart: data } });
+    })
+  }
+
+  UserAPI.remoteMethod('getShoppingList', {
+    description: "Get products by product series Id.",
+    accepts: [{ arg: 'userId', type: 'string', required: true, description: "User id", http: { source: 'path' } }],
+    returns: { arg: 'resp', type: ['ShoppingCartItem'], description: 'is success or not', root: true },
+    http: { path: '/user/:userId/getShoppingList', verb: 'get', status: 200, errorStatus: [500] }
+  });
+  UserAPI.getShoppingList = function (userId) {
+    let ButchartUser = app.models.ButchartUser;
+    return ButchartUser.find({ where: { _id: userId } }).then(result => {
+      if (result.length == 0)
+        throw apiUtils.build404Error(nodeUtil.format(errorConstants.ERROR_MESSAGE_NO_MODEL_FOUND, 'ButchartUser'));
+      return Promise.resolve(result[0].shoppingCart);
+    })
   }
 }; 
