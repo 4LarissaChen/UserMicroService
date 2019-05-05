@@ -13,6 +13,9 @@
     },
     "accountLevel": {
       "type": "string"
+    },
+    "defaultFlorist": {
+      "type": "string"
     }
   },
   "validations": [],

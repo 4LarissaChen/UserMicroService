@@ -129,4 +129,42 @@ module.exports = function (UserAPI) {
       return Promise.resolve(result[0].shoppingCart);
     })
   }
+
+  UserAPI.remoteMethod('updateCustomerPool', {
+    description: "updateCustomerPool florist's customer pool.",
+    accepts: [{ arg: 'floristId', type: 'string', required: true, description: "Florist Id", http: { source: 'path' } },
+    { arg: 'customerId', type: 'string', required: true, description: "Customer Id", http: { source: 'query' } }],
+    returns: { arg: 'resp', type: 'IsSuccessResponse', description: 'is success or not', root: true },
+    http: { path: '/florist/:floristId/updateCustomerPool', verb: 'put', status: 200, errorStatus: [500] }
+  });
+  UserAPI.updateCustomerPool = function (floristId, customerId) {
+    let ButchartUser = app.models.ButchartUser;
+    return ButchartUser.find({ where: { _id: userId } }).then(resul => {
+      if (result.length == 0)
+        throw apiUtils.build404Error(nodeUtil.format(errorConstants.ERROR_MESSAGE_NO_MODEL_FOUND, 'ButchartUser'));
+      return promiseUtils.mongoNativeUpdatePromise('ButchartUser', { customerPool: customerId }, { $pull: { customerPool: customerId } });
+    }).then(result => {
+      return promiseUtils.mongoNativeUpdatePromise('ButchartUser', { _id: floristId }, { $addToSet: { customerPool: customerId } })
+    }).then(() => {
+      return { isSuccess: true };
+    })
+  }
+
+  UserAPI.remoteMethod('setDefaultFlorist', {
+    description: "Set User's default Florist.",
+    accepts: [{ arg: 'userId', type: 'string', required: true, description: "User Id", http: { source: 'path' } },
+    { arg: 'floristId', type: 'string', required: true, description: "Florist Id", http: { source: 'path' } }],
+    returns: { arg: 'resp', type: 'IsSuccessResponse', description: 'is success or not', root: true },
+    http: { path: '/user/:userId/florist/:floristId/setDefaultFlorist', verb: 'put', status: 200, errorStatus: [500] }
+  });
+  UserAPI.setDefaultFlorist = function (userId, floristId) {
+    let ButchartUser = app.models.ButchartUser;
+    return ButchartUser.find({ where: { _id: userId } }).then(resul => {
+      if (result.length == 0)
+        throw apiUtils.build404Error(nodeUtil.format(errorConstants.ERROR_MESSAGE_NO_MODEL_FOUND, 'ButchartUser'));
+      return promiseUtils.mongoNativeUpdatePromise('ButchartUser', { _id: userId }, { $set: { "userProfile.defaultFlorist": floristId } });
+    }).then(() => {
+      return { isSuccess: true };
+    });
+  }
 }; 

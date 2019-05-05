@@ -26,9 +26,13 @@ module.exports = function (AddressAPI) {
     let addressInfo = {
       _id: apiUtils.generateShortId("address"),
       userId: userId,
-      address: addressData.address,
+      province: addressData.province,
+      city: addressData.city,
+      district: addressData.district,
+      street: addressData.street,
       tel: addressData.tel,
       postcode: addressData.postcode,
+      name: addressData.name
     }
     return Address.upsert(addressInfo).then(() => {
       if (isDefault == true)
@@ -49,7 +53,10 @@ module.exports = function (AddressAPI) {
   AddressAPI.modifyAddress = function (userId, addressData) {
     return promiseUtils.mongoNativeUpdatePromise("Address", { _id: addressData._id }, {
       $set: {
-        address: addressData.address,
+        province: addressData.province,
+        city: addressData.city,
+        district: addressData.district,
+        street: addressData.street,
         tel: addressData.tel,
         postcode: addressData.postcode
       }

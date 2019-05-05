@@ -47,6 +47,9 @@
 		"shoppingCart":{
 			"type": ["ShoppingCartItem"],
 			"required": false
+		},
+		"customerPool": {
+			"type": "string"
 		}
 	},
 	"validations": [],
