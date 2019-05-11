@@ -49,7 +49,12 @@
 			"required": false
 		},
 		"customerPool": {
-			"type": "string"
+			"type": ["string"],
+			"required": false
+		},
+		"isFlorist": {
+			"type": "boolean",
+			"required": true
 		}
 	},
 	"validations": [],

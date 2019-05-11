@@ -38,3 +38,4 @@ exports.ERROR_CODE_INTERNAL_SERVER_ERROR = 500;
  */
 exports.ERROR_NAME_INVALID_INPUT_PARAMETERS = "Invalid Input Parameters";
 exports.ERROR_MESSAGE_NO_MODEL_FOUND = "The target %s is not found";   // e.g. The Architecture is not found
+exports.ERROR_TARGET_MODEL_EXISTS = "The target %s is already exists."

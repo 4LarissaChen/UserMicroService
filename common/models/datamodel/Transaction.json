@@ -12,13 +12,21 @@
 			"id": true,
 			"required": true
 		},
-		"userId": {
+		"customerId": {
 			"type": "string",
 			"required": true
 		},
-		"orderId": {
-			"type": "string",
-			"required": true
+		"floristId": {
+			"type": "string"
+		},
+		"storeId": {
+			"type": "string"
+		},
+		"trackingId": {
+			"type": "string"
+		},
+		"freight": {
+			"type": "string"
 		},
 		"status": {
 			"type": "string",
@@ -28,16 +36,36 @@
 			"type": "string",
 			"required": true
 		},
-		"address": {
+		"finishDate": {
+			"type": "string"
+		},
+		"payedDate": {
+			"type": "string"
+		},
+		"addressId": {
 			"type": "string",
 			"required": true
 		},
-		"payedDate": {
+		"totalPrice": {
+			"type": "string",
+			"required": true
+		},
+		"comment": {
 			"type": "string"
 		}
 	},
 	"validations": [],
-	"relations": {},
+	"relations": {
+		"products": {
+			"type": "embedsMany",
+			"model": "Product",
+			"property": "products",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		}
+	},
 	"acls": [],
 	"methods": {}
 }

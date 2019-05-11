@@ -8,15 +8,15 @@ var Promise = require('bluebird');
 var moment = require('moment');
 var errorConstants = require('../../../../server/constants/errorConstants.js');
 var promiseUtils = require('../../../../server//utils/promiseUtils.js');
+var TransactionService = require('./internalService/TransactionService.js');
 module.exports = function (TransactionAPI) {
 
   TransactionAPI.remoteMethod('createTransaction', {
     description: "Create transaction.",
     accepts: [{ arg: 'userId', type: 'string', required: true, description: "User Id", http: { source: 'path' } },
-    { arg: 'orderId', type: 'string', required: true, description: "Order Id", http: { source: 'path' } },
-    { arg: 'addressId', type: 'string', required: true, description: "Address Id", http: { source: 'path' } }],
+    { arg: 'createData', type: 'CreateTransactionRequest', required: true, description: "Create transaction data.", http: { source: 'body' } }],
     returns: { arg: 'resp', type: 'IsSuccessResponse', description: '', root: true },
-    http: { path: '/userId/:userId/order/:orderId/store/:storeId/address/:addressId', verb: 'put', status: 200, errorStatus: 500 }
+    http: { path: '/userId/:userId/order/:orderId/store/:storeId/address/:addressId', verb: 'post', status: 200, errorStatus: 500 }
   });
   TransactionAPI.createTransaction = function (userId, orderId, addressId) {
     let Transaction = app.models.Transaction;
@@ -26,7 +26,7 @@ module.exports = function (TransactionAPI) {
       userId: userId,
       orderId: orderId,
       address: addressId,
-      createDate: moment().utc().format(),
+      createDate: moment().local().format('YYYY-MM-DD HH:mm:ss'),
       status: 'unpayed'
     };
     return ButchartUser.count({ _id: userId }).then(result => {
@@ -34,6 +34,24 @@ module.exports = function (TransactionAPI) {
       return Transaction.upsert(transaction);
     }).then(() => {
       return { isSuccess: true }
+    });
+  }
+
+  TransactionAPI.remoteMethod('updateTransaction', {
+    description: "Create transaction.",
+    accepts: [{ arg: 'transactionId', type: 'string', required: true, description: "Transaction Id", http: { source: 'path' } },
+    { arg: 'updateData', type: 'UpdateTransactionRequest', required: true, description: "Update transaction data", http: { source: 'body' } }],
+    returns: { arg: 'resp', type: 'IsSuccessResponse', description: '', root: true },
+    http: { path: '/userId/updateTransaction', verb: 'put', status: 200, errorStatus: 500 }
+  });
+  TransactionAPI.updateTransaction = function (transactionId, updateData) {
+    let transactionService = new TransactionService();
+    return transactionService.getTransactionById(transactionId).then(result => {
+      for (let key in updateData)
+        result[key] = updateData[key];
+      return transactionService.updateTransaction(result);
+    }).then(() => ({ isSuccess: true })).catch(err => {
+      throw err;
     });
   }
 
@@ -48,7 +66,7 @@ module.exports = function (TransactionAPI) {
     let Transaction = app.models.Transaction;
     return Transaction.findOne({ _id: transactionId }).then(result => {
       if (!result) throw apiUtils.build404Error(errorConstants.ERROR_MESSAGE_NO_MODEL_FOUND, "Transaction");
-      return promiseUtils.mongoNativeUpdatePromise("Transaction", { _id: transactionId }, { $set: { status: status, payedDate: moment().utc().format() } });
+      return promiseUtils.mongoNativeUpdatePromise("Transaction", { _id: transactionId }, { $set: { status: status, payedDate: moment().local().format('YYYY-MM-DD HH:mm:ss') } });
     }).then(() => {
       return { isSuccess: true };
     })

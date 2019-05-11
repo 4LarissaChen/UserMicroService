@@ -5,11 +5,11 @@ var Promise = require('bluebird');
 
 class UserService {
 
-  createUser(tel) {
+  createUser(data) {
     let ButchartUser = app.models.ButchartUser;
     let user = {
-      _id: tel,
-      tel: tel,
+      _id: data.tel,
+      tel: data.tel,
       email: "",
       registerDate: moment().local().format('YYYY-MM-DD HH:mm:ss'),
       password: "Butchart",
@@ -18,7 +18,8 @@ class UserService {
         defaultAddress: "",
         accountLevel: "0"
       },
-      shoppingCart:[]
+      shoppingCart: [],
+      isFlorist: data.isFlorist ? data.isFlorist : false
     }
     return ButchartUser.create(user);
   }

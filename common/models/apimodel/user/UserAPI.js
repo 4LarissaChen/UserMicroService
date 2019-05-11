@@ -28,6 +28,27 @@ module.exports = function (UserAPI) {
     });
   };
 
+  UserAPI.remoteMethod('floristRegister', {
+    description: "Florist register.",
+    accepts: [{ arg: 'registerData', type: 'FloristRegisterRequest', required: true, description: "Florist register data", http: { source: 'body' } }],
+    returns: { arg: 'resp', type: 'ButchartUser', description: '', root: true },
+    http: { path: '/user/floristRegister', verb: 'put', status: 200, errorStatus: [500] }
+  });
+  UserAPI.floristRegister = function (registerData) {
+    let telReg = /^1\d{10}$/;
+    if (!telReg.test(registerData.tel))
+      throw apiUtils.build500Error(errorConstants.ERROR_NAME_INVALID_INPUT_PARAMETERS, "Phone number is invalid!");
+    let userService = new UserService();
+    registerData.isFlorist = true;
+    return ButchartUser.find({ where: { tel: tel } }).then(result => {
+      if (result.length == 0)
+        return userService.createUser(registerData);
+      else
+        if(result[0].isFlorist = true)
+        throw apiUtils.build500Error(errorConstants.ERROR_TARGET_MODEL_EXISTS, "Florist")
+    })
+  }
+
   UserAPI.remoteMethod('login', {
     description: "User login.",
     accepts: [{ arg: 'tel', type: 'string', required: true, description: "User telephone number", http: { source: 'query' } },
@@ -44,7 +65,7 @@ module.exports = function (UserAPI) {
     let userService = new UserService();
     return ButchartUser.find({ where: { tel: tel } }).then(result => {
       if (result.length == 0)
-        return userService.createUser(tel);
+        return userService.createUser({ tel: tel });
       else
         return messageUtils.querySentMessage(tel, code).then(() => {
           result[0].lastLoginDate = moment().local().format('YYYY-MM-DD HH:mm:ss');

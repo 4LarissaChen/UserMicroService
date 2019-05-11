@@ -1,0 +1,23 @@
+{
+  "name": "FloristRegisterRequest",
+  "idInjection": false,
+  "base": "Model",
+  "strict": true,
+  "properties": {
+    "id": false,
+    "tel": {
+      "type": "string",
+      "required": true
+    },
+    "name":{
+      "type": "string",
+      "required": true
+    },
+    "birthday": {
+      "type": "string"
+    },
+    "sexual":{
+      "type": "string"
+    }
+  }
+}
