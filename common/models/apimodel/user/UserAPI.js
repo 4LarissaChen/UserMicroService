@@ -39,12 +39,12 @@ module.exports = function (UserAPI) {
     if (!telReg.test(registerData.tel))
       throw apiUtils.build500Error(errorConstants.ERROR_NAME_INVALID_INPUT_PARAMETERS, "Phone number is invalid!");
     let userService = new UserService();
-    registerData.isFlorist = true;
+    registerData.florist._id = apiUtils.generateShortId("florist");
     return ButchartUser.find({ where: { tel: tel } }).then(result => {
       if (result.length == 0)
         return userService.createUser(registerData);
       else
-        if(result[0].isFlorist = true)
+        if(!result[0].florist._id)
         throw apiUtils.build500Error(errorConstants.ERROR_TARGET_MODEL_EXISTS, "Florist")
     })
   }
@@ -188,4 +188,12 @@ module.exports = function (UserAPI) {
       return { isSuccess: true };
     });
   }
+
+  UserAPI.remoteMethod('getFlorist', {
+		description: "Get florist.",
+		accepts: [{ arg: 'userId', type: 'string', required: true, description: "User Id.", http: { source: 'query' } },
+		{ arg: 'storeId', type: 'string', required: true, description: "Store Id.", http: { source: 'query' } }],
+		returns: { arg: 'resp', type: 'IsSuccessResponse', description: '', root: true },
+		http: { path: '/user/getFlorist', verb: 'get', status: 200, errorStatus: [500] }
+	});
 }; 

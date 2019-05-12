@@ -18,20 +18,13 @@ module.exports = function (TransactionAPI) {
     returns: { arg: 'resp', type: 'IsSuccessResponse', description: '', root: true },
     http: { path: '/userId/:userId/order/:orderId/store/:storeId/address/:addressId', verb: 'post', status: 200, errorStatus: 500 }
   });
-  TransactionAPI.createTransaction = function (userId, orderId, addressId) {
-    let Transaction = app.models.Transaction;
-    let ButchartUser = app.models.ButchartUser;
-    let transaction = {
-      _id: apiUtils.generateShortId("transaction"),
-      userId: userId,
-      orderId: orderId,
-      address: addressId,
-      createDate: moment().local().format('YYYY-MM-DD HH:mm:ss'),
-      status: 'unpayed'
-    };
+  TransactionAPI.createTransaction = function (userId, createData) {
+    let transactionService = new TransactionService();
     return ButchartUser.count({ _id: userId }).then(result => {
       if (result == 0) throw apiUtils.build404Error(errorConstants.ERROR_MESSAGE_NO_MODEL_FOUND, "ButchartUser");
-      return Transaction.upsert(transaction);
+      createData._id = apiUtils.generateShortId("transaction");
+      createData.userId = userId;
+      return transactionService.createTransaction(createData);
     }).then(() => {
       return { isSuccess: true }
     });
@@ -55,23 +48,6 @@ module.exports = function (TransactionAPI) {
     });
   }
 
-  TransactionAPI.remoteMethod('changeStatus', {
-    description: "Change transaction status.",
-    accepts: [{ arg: 'transactionId', type: 'string', required: true, description: "Transaction Id", http: { source: 'path' } },
-    { arg: 'status', type: 'string', required: true, description: "transaction status", http: { source: 'query' } }],
-    returns: { arg: 'resp', type: 'IsSuccessResponse', description: '', root: true },
-    http: { path: '/transaction/:transactionId/changeStatus', verb: 'put', status: 200, errorStatus: 500 }
-  });
-  TransactionAPI.changeStatus = function (transactionId, status) {
-    let Transaction = app.models.Transaction;
-    return Transaction.findOne({ _id: transactionId }).then(result => {
-      if (!result) throw apiUtils.build404Error(errorConstants.ERROR_MESSAGE_NO_MODEL_FOUND, "Transaction");
-      return promiseUtils.mongoNativeUpdatePromise("Transaction", { _id: transactionId }, { $set: { status: status, payedDate: moment().local().format('YYYY-MM-DD HH:mm:ss') } });
-    }).then(() => {
-      return { isSuccess: true };
-    })
-  }
-
   TransactionAPI.remoteMethod('getUserOwnedTransactions', {
     description: "Get user owend transactions.",
     accepts: { arg: 'userId', type: 'string', required: true, description: "User Id", http: { source: 'path' } },
@@ -93,8 +69,8 @@ module.exports = function (TransactionAPI) {
     http: { path: '/userId/:userId/transactionId/:transactionId/getTransactionById', verb: 'get', status: 200, errorStatus: 500 }
   });
   TransactionAPI.getTransactionById = function (userId, transactionId) {
-    var Transaction = app.models.Transaction;
-    return Transaction.findOne({ transactionId: transactionId });
+    let transactionService = new TransactionService();
+    return transactionService.getTransactionById(transactionId);
   }
 
   TransactionAPI.remoteMethod('searchTransaction', {

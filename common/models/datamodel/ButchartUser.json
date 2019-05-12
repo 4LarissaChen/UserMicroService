@@ -47,14 +47,6 @@
 		"shoppingCart":{
 			"type": ["ShoppingCartItem"],
 			"required": false
-		},
-		"customerPool": {
-			"type": ["string"],
-			"required": false
-		},
-		"isFlorist": {
-			"type": "boolean",
-			"required": true
 		}
 	},
 	"validations": [],
@@ -63,6 +55,15 @@
 			"type": "embedsOne",
 			"model": "UserProfile",
 			"property": "userProfile",
+			"options": {
+				"validate": true,
+				"forceId": false
+			}
+		},
+		"relatedFlorist": {
+			"type": "embedsOne",
+			"model": "Florist",
+			"property": "florist",
 			"options": {
 				"validate": true,
 				"forceId": false

@@ -9,9 +9,14 @@
 			"type": "string",
 			"required": true
 		},
-		"address": {
-			"type": "string",
-			"required": true
+		"province": {
+			"type": "string"
+		},
+		"city": {
+			"type": "string"
+		},
+		"district": {
+			"type": "string"
 		},
 		"tel": {
 			"type": "string",

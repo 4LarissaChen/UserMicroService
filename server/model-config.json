@@ -15,9 +15,13 @@
       "../common/models/apimodel/user/apiSpec/common/response",
       "../common/models/apimodel/transaction/apiSpec/common/response",
       "../common/models/apimodel/transaction/apiSpec/serachTransaction/request",
+      "../common/models/apimodel/transaction/apiSpec/createTransaction/request",
+      "../common/models/apimodel/transaction/apiSpec/updateTransaction/request",
       "../common/models/apimodel/transaction/apiSpec/searchTransaction/request",
       "../common/models/apimodel/address/apiSpec/addAddress/request",
-      "../common/models/apimodel/address/apiSpec/modifyAddress/request"
+      "../common/models/apimodel/address/apiSpec/modifyAddress/request",
+      "../common/models/apimodel/store/apiSpec/createStore/request",
+      "../common/models/apimodel/store/apiSpec/updateStore/request"
     ],
     "mixins": [
       "loopback/common/mixins",
@@ -78,7 +82,22 @@
     "dataSource": "db",
     "public": true
   },
-
+  "CreateStoreRequest": {
+    "dataSource": "db",
+    "public": true
+  },
+  "UpdateStoreRequest": {
+    "dataSource": "db",
+    "public": true
+  },
+  "UpdateTransactionRequest": {
+    "dataSource": "db",
+    "public": true
+  },
+  "CreateTransactionRequest": {
+    "dataSource": "db",
+    "public": true
+  },
 
   "SendMessageResponse": {
     "dataSource": "db",

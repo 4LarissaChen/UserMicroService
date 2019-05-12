@@ -6,6 +6,10 @@ var apiUtils = require('../../../../../server/utils/apiUtils.js');
 var errorConstants = require('../../../../../server/constants/errorConstants.js');
 class TransactionService {
 
+  createTransaction(data){
+    let Transaction = app.models.Transaction;
+    return Transaction.upsert(data);
+  }
   getTransactionById(transactionId) {
     let Transaction = app.models.Transaction;
     return Transaction.find({ where: { _id: transactionId } }).then(result => {

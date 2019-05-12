@@ -1,0 +1,27 @@
+{
+  "name": "Florist",
+	"base": "Model",
+  "idInjection": true,
+  "strict": false,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "_id": {
+      "type": "string",
+      "id": true,
+      "required": true
+    },
+    "level": {
+      "type": "string"
+    },
+    "customerPool": {
+      "type": ["string"]
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {},
+  "mixins": {}
+}

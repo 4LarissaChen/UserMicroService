@@ -1,0 +1,33 @@
+{
+	"name": "UpdateStoreRequest",
+	"base": "Model",
+	"idInjection": false,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"id": false,
+		"name": {
+			"type": "string"
+    },
+    "province":{
+			"type":"string"
+		},
+		"city":{
+			"type":"string"
+		},
+		"district":{
+			"type":"string"
+		},
+		"street": {
+			"type": "string"
+    },
+    "tel": {
+      "type": "string"
+    }
+	},
+	"validations": [],
+	"relations": {},
+	"acls": [],
+	"methods": {}
+}

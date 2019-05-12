@@ -1,15 +1,14 @@
 {
-	"name": "Transaction",
-	"base": "PersistedModel",
-	"strict": true,
-	"idInjection": true,
-	"options": {
-		"validateUpsert": true
-	},
-	"properties": {
-		"_id": {
+  "name": "UpdateTransactionRequest",
+  "base": "Model",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "id": false,
+		"userId": {
 			"type": "string",
-			"id": true,
 			"required": true
 		},
 		"floristId": {
@@ -52,19 +51,9 @@
 		"feadback": {
 			"type": "string"
 		}
-	},
-	"validations": [],
-	"relations": {
-		"products": {
-			"type": "embedsMany",
-			"model": "Product",
-			"property": "products",
-			"options": {
-				"validate": true,
-				"forceId": false
-			}
-		}
-	},
-	"acls": [],
-	"methods": {}
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
 }
