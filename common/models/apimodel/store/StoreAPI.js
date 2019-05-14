@@ -24,7 +24,7 @@ module.exports = function (StoreAPI) {
 
   StoreAPI.remoteMethod('deleteStore', {
     description: "Delete a sotre.",
-    accepts: [{ arg: 'storeId', type: 'tring', required: true, description: "store id.", http: { source: 'query' } }],
+    accepts: [{ arg: 'storeId', type: 'string', required: true, description: "store id.", http: { source: 'query' } }],
     returns: { arg: 'resp', type: 'IsSuccessResponse', description: '', root: true },
     http: { path: '/store/deleteStore', verb: 'delete', status: 200, errorStatus: 500 }
   });
@@ -34,14 +34,35 @@ module.exports = function (StoreAPI) {
   }
 
   StoreAPI.remoteMethod('updateStore', {
-    description: "Delete a sotre.",
+    description: "Update a sotre.",
     accepts: [{ arg: 'storeId', type: 'string', required: true, description: "Store id.", http: { source: 'query' } },
     { arg: 'updateData', type: 'UpdateStoreRequest', required: true, description: "Update store data.", http: { source: 'body' } }],
     returns: { arg: 'resp', type: 'IsSuccessResponse', description: '', root: true },
     http: { path: '/store/updateStore', verb: 'put', status: 200, errorStatus: 500 }
   });
-  StoreAPI.updateStore = function(storeId, updateData){
+  StoreAPI.updateStore = function (storeId, updateData) {
     let storeService = new StoreService();
-      return storeService.updateStore(updateData);
+    return storeService.updateStore(updateData);
+  }
+
+  StoreAPI.remoteMethod('getStoreById', {
+    description: "Get sotre by id.",
+    accepts: [{ arg: 'storeId', type: 'string', required: true, description: "Store id.", http: { source: 'path' } }],
+    returns: { arg: 'resp', type: 'Store', description: '', root: true },
+    http: { path: '/store/:storeId/getStoreById', verb: 'get', status: 200, errorStatus: 500 }
+  });
+  StoreAPI.getStoreById = function (storeId) {
+    let storeService = new StoreService();
+    return storeService.getStore(storeId).catch(err => { throw err });
+  }
+
+  StoreAPI.remoteMethod('getAllStores', {
+    description: "Get all sotres.",
+    returns: { arg: 'resp', type: ['Store'], description: '', root: true },
+    http: { path: '/store/getAllStores', verb: 'get', status: 200, errorStatus: 500 }
+  });
+  StoreAPI.getAllStores = function(){
+    let storeService = new StoreService();
+    return storeService.getAllStores().catch(err => { throw err });
   }
 }

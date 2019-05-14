@@ -1,43 +1,26 @@
 {
-  "name": "Store",
-	"base": "PersistedModel",
+  "name": "Logistics",
+  "base": "Model",
   "idInjection": true,
   "strict": false,
   "options": {
     "validateUpsert": true
   },
   "properties": {
-    "_id": {
-      "type": "string",
-      "id": true,
-      "required": true
-    },
-    "name": {
+    "deliveryMethod": {
       "type": "string",
       "required": true
     },
-    "province":{
-			"type":"string"
-		},
-		"city":{
-			"type":"string"
-		},
-		"district":{
-			"type":"string"
-		},
-		"street": {
-			"type": "string"
+    "trackingId": {
+      "type": "string",
+      "required": false
     },
-    "tel": {
+    "freight": {
       "type": "string",
       "required": true
     },
-    "status": {
+    "logisticsCompany": {
       "type": "string",
-      "required": true
-    },
-    "florists": {
-      "type": ["string"],
       "required": false
     }
   },

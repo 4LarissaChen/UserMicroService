@@ -20,10 +20,15 @@ module.exports = function (TransactionAPI) {
   });
   TransactionAPI.createTransaction = function (userId, createData) {
     let transactionService = new TransactionService();
+    let ButchartUser = app.models.ButchartUser;
     return ButchartUser.count({ _id: userId }).then(result => {
       if (result == 0) throw apiUtils.build404Error(errorConstants.ERROR_MESSAGE_NO_MODEL_FOUND, "ButchartUser");
+      createData = createData.__data;
       createData._id = apiUtils.generateShortId("transaction");
       createData.userId = userId;
+      createData.status = "unpayed";
+      createData.createDate = moment().local().format('YYYY-MM-DD hh:mm:ss');
+      createData.logistics = createData.logistics.__data;
       return transactionService.createTransaction(createData);
     }).then(() => {
       return { isSuccess: true }
@@ -35,14 +40,15 @@ module.exports = function (TransactionAPI) {
     accepts: [{ arg: 'transactionId', type: 'string', required: true, description: "Transaction Id", http: { source: 'path' } },
     { arg: 'updateData', type: 'UpdateTransactionRequest', required: true, description: "Update transaction data", http: { source: 'body' } }],
     returns: { arg: 'resp', type: 'IsSuccessResponse', description: '', root: true },
-    http: { path: '/userId/updateTransaction', verb: 'put', status: 200, errorStatus: 500 }
+    http: { path: '/transaction/:transactionId/updateTransaction', verb: 'put', status: 200, errorStatus: 500 }
   });
   TransactionAPI.updateTransaction = function (transactionId, updateData) {
     let transactionService = new TransactionService();
     return transactionService.getTransactionById(transactionId).then(result => {
+      updateData = updateData.__data;
       for (let key in updateData)
-        result[key] = updateData[key];
-      return transactionService.updateTransaction(result);
+        result.__data[key] = updateData[key];
+      return transactionService.updateTransaction(result.__data);
     }).then(() => ({ isSuccess: true })).catch(err => {
       throw err;
     });
@@ -63,12 +69,11 @@ module.exports = function (TransactionAPI) {
 
   TransactionAPI.remoteMethod('getTransactionById', {
     description: "Get transaction by Id.",
-    accepts: [{ arg: 'userId', type: 'string', required: true, description: "User Id", http: { source: 'path' } },
-    { arg: 'transactionId', type: 'string', required: true, description: "Transaction Id", http: { source: 'path' } }],
+    accepts: [{ arg: 'transactionId', type: 'string', required: true, description: "Transaction Id", http: { source: 'path' } }],
     returns: { arg: 'resp', type: ['Transaction'], description: '', root: true },
-    http: { path: '/userId/:userId/transactionId/:transactionId/getTransactionById', verb: 'get', status: 200, errorStatus: 500 }
+    http: { path: '/transaction/:transactionId/getTransactionById', verb: 'get', status: 200, errorStatus: 500 }
   });
-  TransactionAPI.getTransactionById = function (userId, transactionId) {
+  TransactionAPI.getTransactionById = function (transactionId) {
     let transactionService = new TransactionService();
     return transactionService.getTransactionById(transactionId);
   }
@@ -81,14 +86,15 @@ module.exports = function (TransactionAPI) {
   });
   TransactionAPI.searchTransaction = function (filter) {
     var Transaction = app.models.Transaction;
+    filter = filter.__data;
     var conditions = [];
-    if (filter.userId !== "")
+    if (filter.userId && filter.userId !== "")
       conditions.push({ userId: filter.userId });
-    if (filter.status !== "")
+    if (filter.status && filter.status !== "")
       conditions.push({ status: filter.status });
-    if (filter.fromDate !== "")
+    if (filter.fromDate && filter.fromDate !== "")
       conditions.push({ createDate: { "$gt": filter.fromDate } });
-    if (filter.toDate !== "")
+    if (filter.toDate && filter.toDate !== "")
       conditions.push({ createDate: { "$lt": filter.toDate } })
     return Transaction.find({ where: { "$and": conditions } }).then(result => {
       return result.sort((a, b) => { a.createDate <= b.createDate });

@@ -17,11 +17,8 @@
 		"storeId": {
 			"type": "string"
 		},
-		"trackingId": {
-			"type": "string"
-		},
-		"freight": {
-			"type": "string"
+		"logistics": {
+			"type": "UpdateTransactionRequest_Logistics"
 		},
 		"status": {
 			"type": "string",

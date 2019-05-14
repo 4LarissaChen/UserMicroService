@@ -1,0 +1,30 @@
+{
+	"name": "UpdateTransactionRequest_Logistics",
+	"base": "Model",
+	"idInjection": false,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"id": false,
+		"trackingId": {
+			"type": "string"
+		},
+		"deliveryMethod": {
+			"type": "string",
+			"required": false
+		},
+		"freight": {
+			"type": "string",
+			"required": false
+		},
+		"logisticsCompany": {
+			"type": "string",
+			"required": false
+		}
+	},
+	"validations": [],
+	"relations": {},
+	"acls": [],
+	"methods": {}
+}

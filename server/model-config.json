@@ -10,8 +10,10 @@
       "../common/models/apimodel/user",
       "../common/models/apimodel/transaction",
       "../common/models/apimodel/address",
+      "../common/models/apimodel/store",
       "../common/models/apimodel/user/apiSpec/updateUserInfo/request",
       "../common/models/apimodel/user/apiSpec/sendMessage/response",
+      "../common/models/apimodel/user/apiSpec/floristRegister/request",
       "../common/models/apimodel/user/apiSpec/common/response",
       "../common/models/apimodel/transaction/apiSpec/common/response",
       "../common/models/apimodel/transaction/apiSpec/serachTransaction/request",
@@ -42,6 +44,10 @@
     "dataSource": "db",
     "public": true
   },
+  "StoreAPI": {
+    "dataSource": "db",
+    "public": true
+  },
   "UserProfile": {
     "dataSource": "db",
     "public": true
@@ -64,7 +70,26 @@
     "dataSource": "db",
     "public": true
   },
-
+  "TransactionItem": {
+    "dataSource": "db",
+    "public": true
+  },
+  "Logistics": {
+    "dataSource": "db",
+    "public": true
+  },
+  "Store": {
+    "dataSource": "mongo",
+    "public": false
+  },
+  "Product": {
+    "dataSource": "mongo",
+    "public": false
+  },
+  "ProductSeries": {
+    "dataSource": "mongo",
+    "public": false
+  },
 
   "UpdateUserInfoRequest": {
     "dataSource": "db",
@@ -95,6 +120,18 @@
     "public": true
   },
   "CreateTransactionRequest": {
+    "dataSource": "db",
+    "public": true
+  },
+  "FloristRegisterRequest": {
+    "dataSource": "db",
+    "public": true
+  },
+  "UpdateTransactionRequest_Logistics": {
+    "dataSource": "db",
+    "public": true
+  },
+  "CreateTransactionRequest_Logistics": {
     "dataSource": "db",
     "public": true
   },

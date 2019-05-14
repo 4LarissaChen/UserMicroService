@@ -1,5 +1,5 @@
 {
-	"name": "CreateStoreRequest",
+	"name": "CreateTransactionRequest_Logistics",
 	"base": "Model",
 	"idInjection": false,
 	"options": {
@@ -7,27 +7,20 @@
 	},
 	"properties": {
 		"id": false,
-		"name": {
+		"trackingId": {
 			"type": "string"
 		},
-		"province": {
-			"type": "string"
-		},
-		"city": {
-			"type": "string"
-		},
-		"district": {
-			"type": "string"
-		},
-		"street": {
-			"type": "string"
-		},
-		"tel": {
-			"type": "string"
-		},
-		"status": {
+		"deliveryMethod": {
 			"type": "string",
 			"required": true
+		},
+		"freight": {
+			"type": "string",
+			"required": true
+		},
+		"logisticsCompany": {
+			"type": "string",
+			"required": false
 		}
 	},
 	"validations": [],
