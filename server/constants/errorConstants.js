@@ -23,7 +23,7 @@ exports.SMS_SERVICE_ERROR_CODE = {
 };
 
 exports.ERROR_MESSAGE_NO_MODEL_FOUND = "The target %s is not found";  // e.g. The User is not found
-
+exports.ERROR_MESSAGE_CODE_INVALID = "The message code is invalid";
 /**
  * API Response Error Code
  */

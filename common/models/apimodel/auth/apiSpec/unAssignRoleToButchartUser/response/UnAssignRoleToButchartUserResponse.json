@@ -1,0 +1,18 @@
+{
+  "name": "UnAssignRoleToButchartUserResponse",
+  "base": "Model",
+  "idInjection": false,
+  "options": {
+      "validateUpsert": true
+  },
+  "properties": {
+      "id": false,
+      "isUnAssigned": {
+          "type": "boolean"
+      }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

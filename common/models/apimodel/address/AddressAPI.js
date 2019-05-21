@@ -39,7 +39,7 @@ module.exports = function (AddressAPI) {
         return addressService.changeDefaultAddress(userId, addressInfo._id);
       return Promise.resolve();
     }).then(() => {
-      return { isSuccess: true };
+      return { createdId: addressInfo._id };
     })
   };
 

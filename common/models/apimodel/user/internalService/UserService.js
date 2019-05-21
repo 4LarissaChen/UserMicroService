@@ -11,6 +11,7 @@ class UserService {
       _id: data.tel,
       tel: data.tel,
       email: "",
+      username: data.tel,
       registerDate: moment().local().format('YYYY-MM-DD HH:mm:ss'),
       password: "Butchart",
       lastLoginDate: moment().local().format('YYYY-MM-DD HH:mm:ss'),
@@ -18,8 +19,7 @@ class UserService {
         defaultAddress: "",
         accountLevel: "0"
       },
-      shoppingCart: [],
-      isFlorist: data.isFlorist ? data.isFlorist : false
+      shoppingCart: []
     }
     return ButchartUser.create(user);
   }

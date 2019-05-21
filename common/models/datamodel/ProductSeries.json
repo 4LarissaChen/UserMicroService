@@ -1,8 +1,8 @@
 {
   "name": "ProductSeries",
-  "base": "Model",
+  "base": "PersistedModel",
   "idInjection": true,
-  "strict": false,
+  "strict": true,
   "options": {
     "validateUpsert": true
   },
@@ -22,7 +22,18 @@
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "products": {
+      "type": "referencesMany",
+      "model": "Product",
+      "foreignKey": "includeProducts",
+      "options": {
+        "validate": true,
+        "forceId": false,
+        "autoId": true
+      }
+    }
+  },
   "acls": [],
   "methods": {},
   "mixins": {}

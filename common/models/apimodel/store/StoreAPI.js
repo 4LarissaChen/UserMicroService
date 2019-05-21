@@ -61,7 +61,7 @@ module.exports = function (StoreAPI) {
     returns: { arg: 'resp', type: ['Store'], description: '', root: true },
     http: { path: '/store/getAllStores', verb: 'get', status: 200, errorStatus: 500 }
   });
-  StoreAPI.getAllStores = function(){
+  StoreAPI.getAllStores = function () {
     let storeService = new StoreService();
     return storeService.getAllStores().catch(err => { throw err });
   }

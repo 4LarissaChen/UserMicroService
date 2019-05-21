@@ -11,6 +11,8 @@ var errorConstants = require('../../../../server/constants/errorConstants.js');
 var UserService = require('./internalService/UserService.js');
 var messageUtils = require('../../../../server/utils/messageUtils.js');
 var promiseUtils = require('../../../../server/utils/promiseUtils.js');
+var artifactConstants = require('../../../../server/constants/apiConstants.js');
+var fs = require('fs');
 module.exports = function (UserAPI) {
 
   UserAPI.remoteMethod('sendMessage', {
@@ -44,8 +46,8 @@ module.exports = function (UserAPI) {
       if (result.length == 0)
         return userService.createUser(registerData);
       else
-        if(!result[0].florist._id)
-        throw apiUtils.build500Error(errorConstants.ERROR_TARGET_MODEL_EXISTS, "Florist")
+        if (!result[0].florist._id)
+          throw apiUtils.build500Error(errorConstants.ERROR_TARGET_MODEL_EXISTS, "Florist")
     })
   }
 
@@ -58,20 +60,35 @@ module.exports = function (UserAPI) {
   });
 
   UserAPI.login = function (tel, code) {
+    let AccessToken = loopback.findModel("AccessToken");
+    let ButchartUser = loopback.findModel("ButchartUser");
+    let AuthorizationAPI = loopback.findModel("AuthorizationAPI");
+    let userService = new UserService();
     let telReg = /^1\d{10}$/;
+    let resp;
     if (!telReg.test(tel))
       throw apiUtils.build500Error(errorConstants.ERROR_NAME_INVALID_INPUT_PARAMETERS, "Phone number is invalid!");
-    let ButchartUser = app.models.ButchartUser;
-    let userService = new UserService();
     return ButchartUser.find({ where: { tel: tel } }).then(result => {
       if (result.length == 0)
         return userService.createUser({ tel: tel });
       else
-        return messageUtils.querySentMessage(tel, code).then(() => {
-          result[0].lastLoginDate = moment().local().format('YYYY-MM-DD HH:mm:ss');
-          return ButchartUser.upsert(result[0])
-        });
-    });
+        return messageUtils.querySentMessage(tel, code).then(() => result)
+    }).then(result => {
+      resp = result[0];
+      return app.models.AuthorizationAPI.getButchartUserRoles(resp._id);
+    }).then(result => {
+      resp.roles = result;
+      return AccessToken.destroyAll({ "userId": tel }).then(() => {
+        return ButchartUser.login({ username: tel, password: artifactConstants.BUTCHARTUSER_DEFAULT_PWD });
+      })
+    }).then(result => {
+      resp.token = result;
+      return promiseUtils.mongoNativeUpdatePromise('ButchartUser', { "_id": tel }, { $set: { "lastLoginDate": moment().local().format('YYYY-MM-DD HH:mm:ss') } });
+    }).then(() => {
+      return AuthorizationAPI.assignRoleToButchartUser(tel, "Customer");
+    }).then(() => resp).catch(err => {
+      throw err;
+    })
   }
 
   UserAPI.remoteMethod('getUserInfo', {
@@ -121,15 +138,15 @@ module.exports = function (UserAPI) {
   }
 
   UserAPI.remoteMethod('updateShoppingList', {
-    description: "Get products by product series Id.",
+    description: "Update shopping cart.",
     accepts: [{ arg: 'userId', type: 'string', required: true, description: "User id", http: { source: 'path' } },
-    { arg: 'data', type: ['ShoppingCartItem'], required: true, description: "User id", http: { source: 'path' } }],
+    { arg: 'data', type: ['ShoppingCartItem'], required: true, description: "Shopping item list.", http: { source: 'body' } }],
     returns: { arg: 'resp', type: 'IsSuccessResponse', description: 'is success or not', root: true },
     http: { path: '/workspace/user/:userId/updateShoppingList', verb: 'put', status: 200, errorStatus: [500] }
   });
   UserAPI.updateShoppingList = function (userId, data) {
     let ButchartUser = app.models.ButchartUser;
-    return ButchartUser.find({ where: { _id: userId } }).then(resul => {
+    return ButchartUser.find({ where: { _id: userId } }).then(result => {
       if (result.length == 0)
         throw apiUtils.build404Error(nodeUtil.format(errorConstants.ERROR_MESSAGE_NO_MODEL_FOUND, 'ButchartUser'));
       return promiseUtils.mongoNativeUpdatePromise('ButchartUser', { _id: userId }, { $set: { shoppingCart: data } });
@@ -189,11 +206,34 @@ module.exports = function (UserAPI) {
     });
   }
 
-  UserAPI.remoteMethod('getFlorist', {
-		description: "Get florist.",
-		accepts: [{ arg: 'userId', type: 'string', required: true, description: "User Id.", http: { source: 'query' } },
-		{ arg: 'storeId', type: 'string', required: true, description: "Store Id.", http: { source: 'query' } }],
-		returns: { arg: 'resp', type: 'IsSuccessResponse', description: '', root: true },
-		http: { path: '/user/getFlorist', verb: 'get', status: 200, errorStatus: [500] }
-	});
+  UserAPI.remoteMethod('setStaticData', {
+    description: "Get florist.",
+    accepts: [{ arg: 'modelNames', type: ['string'], required: true, description: "Model Names.", http: { source: 'body' } }],
+    returns: { arg: 'resp', type: 'IsSuccessResponse', description: '', root: true },
+    http: { path: '/user/setStaticData', verb: 'post', status: 200, errorStatus: [500] }
+  });
+  UserAPI.setStaticData = function (modelNames) {
+    return Promise.map(modelNames, modelName => {
+      let model = loopback.findModel(modelName);
+      let data = JSON.parse(fs.readFileSync(__dirname + '/../../data/dummy/' + modelName + '.json'));
+      return Promise.map(data, element => {
+        element._id = apiUtils.generateShortId(modelName);
+        return model.create(element);
+      });
+    }).then(() => {
+      let relationship = JSON.parse(fs.readFileSync(__dirname + '/../../data/Relationship.json'));
+      return Promise.map(Object.keys(relationship), key => {
+        let fromModel = loopback.findModel(key.split('2')[0]);
+        let toModel = loopback.findModel(key.split('2')[1]);
+        let fromNodes = [];
+        return Promise.map(relationship[key], element => {
+          return toModel.findOne({ where: { name: element.to } }).then(result => {
+            if (!result)
+              console.log(element.to);
+            return promiseUtils.mongoNativeUpdatePromise('ProductSeries', { name: element.from }, { $addToSet: { includeProducts: result._id } })
+          })
+        })
+      })
+    })
+  }
 }; 

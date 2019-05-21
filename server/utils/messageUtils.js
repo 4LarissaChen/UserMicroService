@@ -47,6 +47,8 @@ exports.querySentMessage = function (tel, code) {
         throw new Error('验证失败，请重新尝试！');
       if (res.SmsSendDetailDTOs.SmsSendDetailDTO[0].Content.indexOf(code) != -1)
         return Promise.resolve();
+      else
+        throw apiUtils.build500Error(errorConstants.ERROR_MESSAGE_CODE_INVALID);
     }
     else
       throw (new Error('验证失败，请重新尝试！'))

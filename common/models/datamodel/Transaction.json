@@ -31,11 +31,11 @@
 			"required": true
 		},
 		"createDate": {
-			"type": "string",
+			"type": "date",
 			"required": true
 		},
 		"finishDate": {
-			"type": "string"
+			"type": "date"
 		},
 		"payedDate": {
 			"type": "string"

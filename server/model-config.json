@@ -7,10 +7,14 @@
       "./models",
       "./models/response",
       "../common/models/datamodel",
+      "../common/models/apimodel/auth",
       "../common/models/apimodel/user",
       "../common/models/apimodel/transaction",
       "../common/models/apimodel/address",
       "../common/models/apimodel/store",
+      "../common/models/apimodel/product",
+      "../common/models/apimodel/auth/apiSpec/assignRoleToButchartUser/response",
+      "../common/models/apimodel/auth/apiSpec/unAssignRoleToButchartUser/response",
       "../common/models/apimodel/user/apiSpec/updateUserInfo/request",
       "../common/models/apimodel/user/apiSpec/sendMessage/response",
       "../common/models/apimodel/user/apiSpec/floristRegister/request",
@@ -23,7 +27,9 @@
       "../common/models/apimodel/address/apiSpec/addAddress/request",
       "../common/models/apimodel/address/apiSpec/modifyAddress/request",
       "../common/models/apimodel/store/apiSpec/createStore/request",
-      "../common/models/apimodel/store/apiSpec/updateStore/request"
+      "../common/models/apimodel/store/apiSpec/updateStore/request",
+      "../common/models/apimodel/product/apiSpec/createProduct/request",
+      "../common/models/apimodel/product/apiSpec/createProductSeries/request"
     ],
     "mixins": [
       "loopback/common/mixins",
@@ -32,6 +38,30 @@
       "./mixins"
     ]
   },
+  "User": {
+    "dataSource": "db",
+    "public": true
+  },
+  "AccessToken": {
+    "dataSource": "mongo",
+    "public": true
+  },
+  "ACL": {
+    "dataSource": "db",
+    "public": true
+  },
+  "RoleMapping": {
+    "dataSource": "mongo",
+    "public": true,
+    "options": {
+      "strictObjectIDCoercion": true
+    }
+  },
+  "Role": {
+    "dataSource": "mongo",
+    "public": true
+  },
+
   "UserAPI": {
     "dataSource": "db",
     "public": true
@@ -45,6 +75,14 @@
     "public": true
   },
   "StoreAPI": {
+    "dataSource": "db",
+    "public": true
+  },
+  "ProductAPI": {
+    "dataSource": "db",
+    "public": true
+  },
+  "AuthorizationAPI": {
     "dataSource": "db",
     "public": true
   },
@@ -135,7 +173,23 @@
     "dataSource": "db",
     "public": true
   },
+  "CreateProductRequest": {
+    "dataSource": "db",
+    "public": true
+  },
+  "CreateProductSeriesRequest": {
+    "dataSource": "db",
+    "public": true
+  },
 
+  "AssignRoleToButchartUserResponse": {
+    "dataSource": "db",
+    "public": true
+  },
+  "UnAssignRoleToButchartUserResponse": {
+    "dataSource": "db",
+    "public": true
+  },
   "SendMessageResponse": {
     "dataSource": "db",
     "public": true

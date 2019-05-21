@@ -27,11 +27,11 @@ module.exports = function (TransactionAPI) {
       createData._id = apiUtils.generateShortId("transaction");
       createData.userId = userId;
       createData.status = "unpayed";
-      createData.createDate = moment().local().format('YYYY-MM-DD hh:mm:ss');
+      createData.createDate = moment().local().format('YYYY-MM-DD HH:mm:ss');
       createData.logistics = createData.logistics.__data;
       return transactionService.createTransaction(createData);
     }).then(() => {
-      return { isSuccess: true }
+      return { createdId: createData._id };
     });
   }
 
@@ -93,11 +93,25 @@ module.exports = function (TransactionAPI) {
     if (filter.status && filter.status !== "")
       conditions.push({ status: filter.status });
     if (filter.fromDate && filter.fromDate !== "")
-      conditions.push({ createDate: { "$gt": filter.fromDate } });
+      conditions.push({ createDate: { "$gt": moment(filter.fromDate).format('YYYY-MM-DD HH:mm:ss') } });
     if (filter.toDate && filter.toDate !== "")
-      conditions.push({ createDate: { "$lt": filter.toDate } })
+      conditions.push({ createDate: { "$lt": moment(filter.toDate).format('YYYY-MM-DD HH:mm:ss') } })
     return Transaction.find({ where: { "$and": conditions } }).then(result => {
       return result.sort((a, b) => { a.createDate <= b.createDate });
     })
   }
+
+  TransactionAPI.remoteMethod('getTransactionOwnerId', {
+    description: "Search transactions by conditions.",
+    accepts: [{ arg: 'transactionId', type: 'string', required: true, description: "Transaction Id.", http: { source: 'path' } }],
+    returns: { arg: 'resp', type: 'string', description: '', root: true },
+    http: { path: '/transaction/:transactionId/getTransactionOwnerId', verb: 'get', status: 200, errorStatus: 500 }
+  });
+  TransactionAPI.getTransactionOwnerId = function (transactionId) {
+    var transactionService = new TransactionService();
+    return transactionService.getTransactionOwnerId(transactionId).catch(err => {
+      throw err;
+    })
+  }
+
 }

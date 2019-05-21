@@ -1,0 +1,22 @@
+{
+	"name": "CreateProductSeriesRequest",
+	"base": "Model",
+	"idInjection": false,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"id": false,
+		"name": {
+			"type": "string",
+			"required": true
+		},
+		"description": {
+			"type": "string"
+		}
+	},
+	"validations": [],
+	"relations": {},
+	"acls": [],
+	"methods": {}
+}

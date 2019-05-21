@@ -1,0 +1,12 @@
+'use strict';
+
+/**
+ * API Response Error Code
+ */
+exports.ERROR_CODE_INVALID_INPUT_PARAMETERS = 400;
+exports.ERROR_CODE_NOT_AUTHORIZED = 401;
+exports.ERROR_CODE_FORBIDDEN = 403;
+exports.ERROR_CODE_NO_MODEL_FOUND = 404;
+exports.ERROR_CODE_INTERNAL_SERVER_ERROR = 500;
+
+exports.BUTCHARTUSER_DEFAULT_PWD = 'Butchart';

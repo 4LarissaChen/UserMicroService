@@ -2,6 +2,7 @@
 var app = require('../../../../../server/server.js');
 var moment = require('moment');
 var Promise = require('bluebird');
+var loopback = require('loopback');
 var apiUtils = require('../../../../../server/utils/apiUtils.js');
 var errorConstants = require('../../../../../server/constants/errorConstants.js');
 class TransactionService {
@@ -22,6 +23,11 @@ class TransactionService {
   updateTransaction(transaction){
     let Transaction = app.models.Transaction;
     return Transaction.upsert(transaction);
+  }
+
+  getTransactionOwnerId(transactionId){
+    let Transaction = loopback.findModel("Transaction");
+    return Transaction.findOne({where: {"_id": transactionId}});
   }
 }
 
