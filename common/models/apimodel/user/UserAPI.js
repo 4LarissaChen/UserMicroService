@@ -114,15 +114,17 @@ module.exports = function (UserAPI) {
     let ButchartUser = app.models.ButchartUser;
     let item = {};
     return ButchartUser.find({ where: { _id: userId } }).then(result => {
-      if (result[0] && result[0].shoppingCart.length > 0)
-        result[0].shoppingCart.forEach(element => {
+      result = result[0].__data;
+      if (result && result.shoppingCart.length > 0)
+        result.shoppingCart.forEach(element => {
           if (element.productId == productId) {
-            element.quantity += quantity;
+            element.quantity = quantity;
+            element.addDate = moment().local().format('YYYY-MM-DD HH:mm:ss');
             item = element;
           }
         })
       if (item.productId)
-        return promiseUtils.mongoNativeUpdatePromise('ButchartUser', { _id: userId }, { $set: { shoppingCart: result[0].shoppingCart } });
+        return promiseUtils.mongoNativeUpdatePromise('ButchartUser', { _id: userId }, { $set: { shoppingCart: result.shoppingCart.map(r => r.__data) } });
       else
         item = {
           productId: productId,

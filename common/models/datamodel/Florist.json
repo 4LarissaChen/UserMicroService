@@ -1,8 +1,8 @@
 {
   "name": "Florist",
-	"base": "Model",
+	"base": "PersistedModel",
   "idInjection": true,
-  "strict": false,
+  "strict": true,
   "options": {
     "validateUpsert": true
   },
@@ -12,11 +12,21 @@
       "id": true,
       "required": true
     },
+    "userId": {
+      "type": "string",
+      "required": true
+    },
     "level": {
       "type": "string"
     },
     "customerPool": {
       "type": ["string"]
+    },
+    "status": {
+      "type": "string"
+    },
+    "createDate": {
+      "type": "date"
     }
   },
   "validations": [],

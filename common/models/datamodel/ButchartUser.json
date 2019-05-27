@@ -10,7 +10,7 @@
 		"_id": {
 			"type": "string",
 			"id": true,
-			"required": true
+			"required": false
 		},
 		"tel": {
 			"type": "string",
@@ -43,10 +43,6 @@
 		"registerDate": {
 			"type": "date",
 			"required": false
-		},
-		"shoppingCart":{
-			"type": ["ShoppingCartItem"],
-			"required": false
 		}
 	},
 	"validations": [],
@@ -54,20 +50,17 @@
 		"relatedProfile": {
 			"type": "embedsOne",
 			"model": "UserProfile",
-			"property": "userProfile",
-			"options": {
-				"validate": true,
-				"forceId": false
-			}
+			"property": "userProfile"
 		},
-		"relatedFlorist": {
-			"type": "embedsOne",
+		"florist": {
+			"type": "hasOne",
 			"model": "Florist",
-			"property": "florist",
-			"options": {
-				"validate": true,
-				"forceId": false
-			}
+			"foreignKey": "_id"
+		},
+		"userShoppingCart":{
+			"type": "embedsMany",
+			"model": "ShoppingCartItem",
+			"property": "shoppingCart"
 		}
 	},
 	"acls": [],

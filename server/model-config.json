@@ -13,6 +13,7 @@
       "../common/models/apimodel/address",
       "../common/models/apimodel/store",
       "../common/models/apimodel/product",
+      "../common/models/apimodel/florist",
       "../common/models/apimodel/auth/apiSpec/assignRoleToButchartUser/response",
       "../common/models/apimodel/auth/apiSpec/unAssignRoleToButchartUser/response",
       "../common/models/apimodel/user/apiSpec/updateUserInfo/request",
@@ -82,6 +83,10 @@
     "dataSource": "db",
     "public": true
   },
+  "FloristAPI": {
+    "dataSource": "db",
+    "public": true
+  },
   "AuthorizationAPI": {
     "dataSource": "db",
     "public": true
@@ -105,8 +110,12 @@
     "public": false
   },
   "ShoppingCartItem": {
-    "dataSource": "db",
-    "public": true
+    "dataSource": "mongo",
+    "public": false
+  },
+  "Florist": {
+    "dataSource": "mongo",
+    "public": false
   },
   "TransactionItem": {
     "dataSource": "db",
