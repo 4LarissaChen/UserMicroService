@@ -10,6 +10,7 @@ var moment = require('moment');
 var errorConstants = require('../../../../server/constants/errorConstants.js');
 var apiConstants = require('../../../../server/constants/apiConstants.js');
 var promiseUtils = require('../../../../server/utils/promiseUtils.js');
+var FloristService = require('./internalService/FloristService.js');
 module.exports = function (FloristAPI) {
 
   FloristAPI.remoteMethod('getFlorist', {
@@ -20,7 +21,7 @@ module.exports = function (FloristAPI) {
   });
   FloristAPI.getFlorist = function (floristId) {
     let Florist = loopback.findModel('Florist');
-    return Florist.findOne({ where: { "userId": floristId} });
+    return Florist.findOne({ where: { "userId": floristId } });
   }
 
   FloristAPI.remoteMethod('createFlorist', {
@@ -43,5 +44,19 @@ module.exports = function (FloristAPI) {
       }
       return Florist.create(florist);
     })
+  }
+
+  FloristAPI.remoteMethod('updateCustomerPool', {
+    description: "updateCustomerPool florist's customer pool.",
+    accepts: [{ arg: 'floristId', type: 'string', required: true, description: "Florist Id", http: { source: 'path' } },
+    { arg: 'customerId', type: 'string', required: true, description: "Customer Id", http: { source: 'path' } }],
+    returns: { arg: 'resp', type: 'IsSuccessResponse', description: 'is success or not', root: true },
+    http: { path: '/florist/:floristId/customer/:customerId/updateCustomerPool', verb: 'put', status: 200, errorStatus: [500] }
+  });
+  FloristAPI.updateCustomerPool = function (floristId, customerId) {
+    let floristService = new FloristService();
+    return floristService.updateCustomerPool(floristId, customerId).then(() => {
+      return { isSuccess: true };
+    });
   }
 }

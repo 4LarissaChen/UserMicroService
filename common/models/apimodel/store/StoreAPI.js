@@ -65,4 +65,47 @@ module.exports = function (StoreAPI) {
     let storeService = new StoreService();
     return storeService.getAllStores().catch(err => { throw err });
   }
+
+  StoreAPI.remoteMethod('bindFlorist', {
+    description: "Bind a florist to store.",
+    accepts: [{ arg: 'storeId', type: 'string', required: true, description: "Store id.", http: { source: 'path' } },
+    { arg: 'floristId', type: 'string', required: true, description: "Florist id.", http: { source: 'path' } }],
+    returns: { arg: 'resp', type: ['Store'], description: '', root: true },
+    http: { path: '/store/:storeId/florist/:floristId/bindFlorist', verb: 'put', status: 200, errorStatus: 500 }
+  });
+  StoreAPI.bindFlorist = function (storeId, floristId) {
+    let storeService = new StoreService();
+    return storeService.bindFlorist(storeId, floristId);
+  }
+
+  StoreAPI.remoteMethod('unbindFlorist', {
+    description: "Unbind a florist to store.",
+    accepts: [{ arg: 'storeId', type: 'string', required: true, description: "Store id.", http: { source: 'path' } },
+    { arg: 'floristId', type: 'string', required: true, description: "Florist id.", http: { source: 'path' } }],
+    returns: { arg: 'resp', type: ['Store'], description: '', root: true },
+    http: { path: '/store/:storeId/florist/:floristId/unbindFlorist', verb: 'put', status: 200, errorStatus: 500 }
+  });
+  StoreAPI.unbindFlorist = function (storeId, floristId) {
+    let storeService = new StoreService();
+    return storeService.unbindFlorist(storeId, floristId);
+  }
+
+  StoreAPI.remoteMethod('getStoreByFlorist', {
+    description: "Get store by florist id.",
+    accepts: [{ arg: 'floristId', type: 'string', required: true, description: "Florist id.", http: { source: 'path' } }],
+    returns: { arg: 'resp', type: 'Store', description: '', root: true },
+    http: { path: '/florist/:floristId/getStoreByFlorist', verb: 'get', status: 200, errorStatus: 500 }
+  });
+  StoreAPI.getStoreByFlorist = function (floristId) {
+    let storeService = new StoreService();
+    return storeService.getStoreByFlorist(floristId);
+  }
+
+  StoreAPI.remoteMethod('getStoreByManager', {
+    description: "Get store by florist id.",
+    accepts: [{ arg: 'managerId', type: 'string', required: true, description: "manager id.", http: { source: 'path' } }],
+    returns: { arg: 'resp', type: 'Store', description: '', root: true },
+    http: { path: '/manager/:managerId/getStoreByManager', verb: 'get', status: 200, errorStatus: 500 }
+  });
+  
 }
