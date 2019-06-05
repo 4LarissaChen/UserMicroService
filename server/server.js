@@ -19,7 +19,7 @@ app.start = function () {
   var server = https.createServer({
     key: fs.readFileSync(global.appRoot + '/key.pem'),
     cert: fs.readFileSync(global.appRoot + '/cert.pem')
-  })
+  }, app);
 
   server.listen(app.get('port'), function () {
     var baseUrl = 'https://' + app.get('host') + ':' + app.get('port');
