@@ -16,7 +16,7 @@
       "required": false
     },
     "freight": {
-      "type": "string",
+      "type": "number",
       "required": true
     },
     "logisticsCompany": {

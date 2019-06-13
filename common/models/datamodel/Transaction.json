@@ -30,6 +30,10 @@
 			"type": "string",
 			"required": true
 		},
+		"afterSalesDate": {
+			"type": "date",
+			"required": false
+		},
 		"createDate": {
 			"type": "date",
 			"required": true

@@ -114,4 +114,13 @@ module.exports = function (TransactionAPI) {
     })
   }
 
+  TransactionAPI.remoteMethod('getUnassignedTransactions', {
+    description: "Get all the unassigned transactions.",
+    returns: { arg: 'resp', type: ['Transaction'], description: '', root: true },
+    http: { path: '/transaction/getUnassignedTransactions', verb: 'get', status: 200, errorStatus: 500 }
+  });
+  TransactionAPI.getUnassignedTransactions = function(){
+    var transactionService = new TransactionService()
+    return transactionService.getUnassignedTransactions().catch(err => err);
+  }
 }

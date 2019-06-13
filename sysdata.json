@@ -1,0 +1,11 @@
+{
+  "ids": {},
+  "models": {
+    "User": {},
+    "ACL": {
+      "1": "{\"model\": \"AccessToken\", \"property\": \"findById\", \"accessType\": \"READ\", \"principalType\": \"ROLE\", \"principalId\": \"$owner\", \"permission\": \"ALLOW\"}"
+    },
+    "ROleMapping": {},
+    "Role": {}
+  }
+}

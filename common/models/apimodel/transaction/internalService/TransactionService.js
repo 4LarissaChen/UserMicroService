@@ -7,7 +7,7 @@ var apiUtils = require('../../../../../server/utils/apiUtils.js');
 var errorConstants = require('../../../../../server/constants/errorConstants.js');
 class TransactionService {
 
-  createTransaction(data){
+  createTransaction(data) {
     let Transaction = app.models.Transaction;
     return Transaction.upsert(data);
   }
@@ -20,14 +20,19 @@ class TransactionService {
     });
   }
 
-  updateTransaction(transaction){
+  updateTransaction(transaction) {
     let Transaction = app.models.Transaction;
     return Transaction.upsert(transaction);
   }
 
-  getTransactionOwnerId(transactionId){
+  getTransactionOwnerId(transactionId) {
     let Transaction = loopback.findModel("Transaction");
-    return Transaction.findOne({where: {"_id": transactionId}});
+    return Transaction.findOne({ where: { "_id": transactionId } });
+  }
+
+  getUnassignedTransactions() {
+    let Transaction = loopback.findModel("Transaction");
+    return Transaction.find({ where: { $and: [{ storeId: null }, { floristId: null }] } });
   }
 }
 

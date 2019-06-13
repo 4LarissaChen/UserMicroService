@@ -59,4 +59,14 @@ module.exports = function (FloristAPI) {
       return { isSuccess: true };
     });
   }
+
+  FloristAPI.remoteMethod('getFloristList', {
+    description: "Get All Florist.",
+    returns: { arg: 'resp', type: ['Florist'], description: '', root: true },
+    http: { path: '/florist/getFloristList', verb: 'get', status: 200, errorStatus: 500 }
+  });
+  FloristAPI.getFloristList = function(){
+    let floristService = new FloristService();
+    return floristService.getFloristList();
+  }
 }

@@ -19,6 +19,11 @@ class FloristService {
       return { isSuccess: true };
     })
   }
+
+  getFloristList(){
+    let Florist = loopback.findModel("Florist");
+    return Florist.find();
+  }
 }
 
 module.exports = FloristService;

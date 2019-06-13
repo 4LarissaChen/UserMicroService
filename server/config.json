@@ -25,11 +25,11 @@
         "accessKeyId": "LTAIHBlHjdK1vWV0",
         "secretAccessKey": "cSrp6SlKRd4JbBRerlQuXvToTc6JRM"
       },
-      "messageTemplate":{
+      "messageTemplate": {
         "login": "SMS_154425487",
         "changePwd": "SMS_154425484",
         "register": "SMS_154425485",
-        "idVerification":"SMS_154425488"
+        "idVerification": "SMS_154425488"
       }
     }
   }

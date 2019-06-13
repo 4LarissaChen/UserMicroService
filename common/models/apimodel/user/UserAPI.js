@@ -99,7 +99,7 @@ module.exports = function (UserAPI) {
   });
   UserAPI.getUserInfo = function (userId) {
     let ButchartUser = app.models.ButchartUser;
-    return ButchartUser.find({ where: { _id: userId } }).catch(err => err);
+    return ButchartUser.findOne({ where: { _id: userId } }).catch(err => err);
   }
 
   UserAPI.remoteMethod('addToShoppingList', {
