@@ -89,4 +89,15 @@ module.exports = function (AddressAPI) {
     var Address = loopback.findModel("Address");
     return Address.destroyAll({ _id: addressId });
   }
+
+  AddressAPI.remoteMethod('getAddressById', {
+    description: "Get shipping address.",
+    accepts: { arg: 'addressId', type: 'string', required: true, description: "Address Id", http: { source: 'path' } },
+    returns: { arg: 'resp', type: ['Address'], description: '', root: true },
+    http: { path: '/address/address/:addressId/getAddressById', verb: 'get', status: 200, errorStatus: 500 }
+  });
+  AddressAPI.getAddressById = function (addressId) {
+    var Address = loopback.findModel("Address");
+    return Address.find({ where: { _id: addressId } });
+  }
 }

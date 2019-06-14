@@ -20,6 +20,10 @@
     "birthday": {
       "type": "date",
       "required": false
+    },
+    "email": {
+      "type": "string",
+      "required": false
     }
   },
   "validation": [],

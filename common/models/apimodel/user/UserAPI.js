@@ -16,7 +16,7 @@ var fs = require('fs');
 module.exports = function (UserAPI) {
 
   UserAPI.remoteMethod('sendMessage', {
-    description: "Get message verification code.",
+    description: "发送验证码短信。",
     accepts: [{ arg: 'tel', type: 'string', required: true, description: "User telephone number", http: { source: 'path' } },
     { arg: 'operation', type: 'string', required: true, description: "login/register/changePwd/idVerification", http: { source: 'query' } }],
     returns: { arg: 'resp', type: 'SendMessageResponse', description: '', root: true },
@@ -31,7 +31,7 @@ module.exports = function (UserAPI) {
   };
 
   UserAPI.remoteMethod('floristRegister', {
-    description: "Florist register.",
+    description: "注册花艺师账号.",
     accepts: [{ arg: 'registerData', type: 'FloristRegisterRequest', required: true, description: "Florist register data", http: { source: 'body' } }],
     returns: { arg: 'resp', type: 'ButchartUser', description: '', root: true },
     http: { path: '/user/floristRegister', verb: 'put', status: 200, errorStatus: [500] }
@@ -52,7 +52,7 @@ module.exports = function (UserAPI) {
   }
 
   UserAPI.remoteMethod('login', {
-    description: "User login.",
+    description: "用户登录.",
     accepts: [{ arg: 'tel', type: 'string', required: true, description: "User telephone number", http: { source: 'query' } },
     { arg: 'code', type: 'string', required: true, description: "Verification code", http: { source: 'query' } }],
     returns: { arg: 'resp', type: 'ButchartUser', description: '', root: true },
@@ -93,13 +93,31 @@ module.exports = function (UserAPI) {
 
   UserAPI.remoteMethod('getUserInfo', {
     description: "Get user information.",
-    accepts: { arg: 'userId', type: 'string', required: true, description: "User telephone number", http: { source: 'query' } },
+    accepts: { arg: 'userId', type: 'string', required: true, description: "User telephone number", http: { source: 'path' } },
     returns: { arg: 'resp', type: 'ButchartUser', description: '', root: true },
     http: { path: '/butchartuser/userId/:userId/getUserInfo', verb: 'get', status: 200, errorStatus: 500 }
   });
   UserAPI.getUserInfo = function (userId) {
     let ButchartUser = app.models.ButchartUser;
     return ButchartUser.findOne({ where: { _id: userId } }).catch(err => err);
+  }
+
+  UserAPI.remoteMethod('updateUserInfo', {
+    description: "更新用户信息.",
+    accepts: [{ arg: 'userId', type: 'string', required: true, description: "User telephone number", http: { source: 'path' } },
+    { arg: 'userData', type: 'UpdateUserInfoRequest', required: true, description: "用户信息", http: { source: 'body' } }],
+    returns: { arg: 'resp', type: 'ButchartUser', description: '', root: true },
+    http: { path: '/butchartuser/userId/:userId/updateUserInfo', verb: 'put', status: 200, errorStatus: 500 }
+  });
+  UserAPI.updateUserInfo = function (userId, userData) {
+    let self = this;
+    return self.getUserInfo(userId).then(result => {
+      let user = result.__data;
+      Object.keys(userData.__data).forEach(key => {
+        user[key] = userData[key];
+      });
+      return promiseUtils.mongoNativeUpdatePromise("ButchartUser", { _id: userId }, user);
+    })
   }
 
   UserAPI.remoteMethod('addToShoppingList', {
