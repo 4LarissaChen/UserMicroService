@@ -16,9 +16,6 @@
     },
     "defaultFlorist": {
       "type": "string"
-    },
-    "isFlorist":{
-      "type": "string"
     }
   },
   "validations": [],

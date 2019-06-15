@@ -197,7 +197,7 @@ module.exports = function (UserAPI) {
   });
   UserAPI.setDefaultFlorist = function (userId, floristId) {
     let ButchartUser = app.models.ButchartUser;
-    return ButchartUser.find({ where: { _id: userId } }).then(resul => {
+    return ButchartUser.find({ where: { _id: userId } }).then(result => {
       if (result.length == 0)
         throw apiUtils.build404Error(nodeUtil.format(errorConstants.ERROR_MESSAGE_NO_MODEL_FOUND, 'ButchartUser'));
       return promiseUtils.mongoNativeUpdatePromise('ButchartUser', { _id: userId }, { $set: { "userProfile.defaultFlorist": floristId } });

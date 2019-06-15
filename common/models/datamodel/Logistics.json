@@ -18,10 +18,6 @@
     "freight": {
       "type": "number",
       "required": true
-    },
-    "logisticsCompany": {
-      "type": "string",
-      "required": false
     }
   },
   "validations": [],

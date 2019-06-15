@@ -29,6 +29,7 @@ module.exports = function (TransactionAPI) {
       createData.status = "unpayed";
       createData.createDate = moment().local().format('YYYY-MM-DD HH:mm:ss');
       createData.logistics = createData.logistics.__data;
+      createData.productList = createData.productList.map(r => r.__data);
       return transactionService.createTransaction(createData);
     }).then(() => {
       return { createdId: createData._id };

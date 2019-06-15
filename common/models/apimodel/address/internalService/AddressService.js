@@ -8,7 +8,7 @@ class AddressService {
 
   getAddress(userId) {
     let Address = app.models.Address;
-    return Address.find({ userId: userId });
+    return Address.find({ where: { userId: userId } });
   };
 
   changeDefaultAddress(userId, addressId) {

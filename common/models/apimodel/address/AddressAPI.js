@@ -73,7 +73,7 @@ module.exports = function (AddressAPI) {
     description: "Get shipping address.",
     accepts: { arg: 'userId', type: 'string', required: true, description: "User Id", http: { source: 'path' } },
     returns: { arg: 'resp', type: 'IsSuccessResponse', description: '', root: true },
-    http: { path: '/address/userId/:userId/getAddress', verb: 'get', status: 200, errorStatus: 500 }
+    http: { path: '/address/user/:userId/getAddress', verb: 'get', status: 200, errorStatus: 500 }
   });
   AddressAPI.getAddress = function (userId) {
     return addressService.getAddress(userId);
