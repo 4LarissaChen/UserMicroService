@@ -13,11 +13,15 @@
       "required": true
     },
     "addDate": {
-      "type": "string",
+      "type": "date",
       "required": false
     },
     "quantity": {
-      "type": "string",
+      "type": "number",
+      "required": true
+    },
+    "price": {
+      "type": "number",
       "required": true
     }
   },

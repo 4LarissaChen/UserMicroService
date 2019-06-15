@@ -39,7 +39,7 @@
 			"required": true
 		},
 		"totalPrice": {
-			"type": "string",
+			"type": "number",
 			"required": true
 		},
 		"comment": {
