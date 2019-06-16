@@ -136,7 +136,7 @@ module.exports = function (UserAPI) {
       if (result && result.shoppingCart.length > 0)
         result.shoppingCart.forEach(element => {
           if (element.productId == productId) {
-            element.quantity = quantity;
+            element.quantity = Number(quantity);
             element.addDate = moment().local().format('YYYY-MM-DD HH:mm:ss');
             item = element;
           }
@@ -146,7 +146,7 @@ module.exports = function (UserAPI) {
       else
         item = {
           productId: productId,
-          quantity: quantity,
+          quantity: Number(quantity),
           addDate: moment().local().format('YYYY-MM-DD HH:mm:ss')
         }
       return promiseUtils.mongoNativeUpdatePromise('ButchartUser', { _id: userId }, { $addToSet: { shoppingCart: item } });
