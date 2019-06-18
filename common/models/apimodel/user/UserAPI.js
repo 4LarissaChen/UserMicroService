@@ -124,11 +124,12 @@ module.exports = function (UserAPI) {
     description: "Get products by product series Id.",
     accepts: [{ arg: 'userId', type: 'string', required: true, description: "User id", http: { source: 'path' } },
     { arg: 'productId', type: 'string', required: true, description: "Product id", http: { source: 'path' } },
-    { arg: 'quantity', type: 'string', required: true, description: "Quantity", http: { source: 'query' } }],
+    { arg: 'quantity', type: 'number', required: true, description: "Quantity", http: { source: 'query' } },
+    { arg: 'price', type: 'number', required: true, description: "Price", http: { source: 'query' } }],
     returns: { arg: 'resp', type: 'IsSuccessResponse', description: 'is success or not', root: true },
     http: { path: '/user/:userId/product/:productId/addToShoppingList', verb: 'post', status: 200, errorStatus: [500] }
   });
-  UserAPI.addToShoppingList = function (userId, productId, quantity) {
+  UserAPI.addToShoppingList = function (userId, productId, quantity, price) {
     let ButchartUser = app.models.ButchartUser;
     let item = {};
     return ButchartUser.find({ where: { _id: userId } }).then(result => {
@@ -136,8 +137,9 @@ module.exports = function (UserAPI) {
       if (result && result.shoppingCart.length > 0)
         result.shoppingCart.forEach(element => {
           if (element.productId == productId) {
-            element.quantity = Number(quantity);
+            element.quantity += quantity;
             element.addDate = moment().local().format('YYYY-MM-DD HH:mm:ss');
+            element.price = price;
             item = element;
           }
         })
@@ -146,7 +148,7 @@ module.exports = function (UserAPI) {
       else
         item = {
           productId: productId,
-          quantity: Number(quantity),
+          quantity: quantity,
           addDate: moment().local().format('YYYY-MM-DD HH:mm:ss')
         }
       return promiseUtils.mongoNativeUpdatePromise('ButchartUser', { _id: userId }, { $addToSet: { shoppingCart: item } });

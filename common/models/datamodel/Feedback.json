@@ -1,0 +1,28 @@
+{
+  "name": "Feedback",
+	"base": "PersistedModel",
+  "idInjection": false,
+  "strict": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "id": false,
+    "comment": {
+      "type": "string",
+      "required": true
+    },
+    "pics": {
+      "type": ["string"]
+    },
+    "date": {
+      "type": "date",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {},
+  "mixins": {}
+}

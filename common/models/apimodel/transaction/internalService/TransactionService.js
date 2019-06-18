@@ -5,6 +5,7 @@ var Promise = require('bluebird');
 var loopback = require('loopback');
 var apiUtils = require('../../../../../server/utils/apiUtils.js');
 var errorConstants = require('../../../../../server/constants/errorConstants.js');
+var promiseUtils = require('../../../../../server/utils/promiseUtils.js');
 class TransactionService {
 
   createTransaction(data) {
@@ -20,9 +21,8 @@ class TransactionService {
     });
   }
 
-  updateTransaction(transaction) {
-    let Transaction = app.models.Transaction;
-    return Transaction.upsert(transaction);
+  updateTransaction(transactionId, data) {
+    return promiseUtils.mongoNativeUpdatePromise("Transaction", { _id: transactionId }, data);
   }
 
   getTransactionOwnerId(transactionId) {

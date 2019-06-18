@@ -49,7 +49,7 @@ module.exports = function (TransactionAPI) {
       updateData = updateData.__data;
       for (let key in updateData)
         result.__data[key] = updateData[key];
-      return transactionService.updateTransaction(result.__data);
+      return transactionService.updateTransaction(transactionId, result.__data);
     }).then(() => ({ isSuccess: true })).catch(err => {
       throw err;
     });
@@ -99,7 +99,9 @@ module.exports = function (TransactionAPI) {
       conditions.push({ createDate: { "$lt": moment(filter.toDate).format('YYYY-MM-DD HH:mm:ss') } })
     return Transaction.find({ where: { "$and": conditions } }).then(result => {
       return result.sort((a, b) => { a.createDate <= b.createDate });
-    })
+    }).catch(err => {
+      throw err;
+    });
   }
 
   TransactionAPI.remoteMethod('getTransactionOwnerId', {
@@ -121,7 +123,28 @@ module.exports = function (TransactionAPI) {
     http: { path: '/transaction/getUnassignedTransactions', verb: 'get', status: 200, errorStatus: 500 }
   });
   TransactionAPI.getUnassignedTransactions = function(){
-    var transactionService = new TransactionService()
+    var transactionService = new TransactionService();
     return transactionService.getUnassignedTransactions().catch(err => err);
+  }
+
+  TransactionAPI.remoteMethod('changeTransactionToAfterSales', {
+    description: "Search transactions by conditions.",
+    accepts: [{ arg: 'transactionId', type: 'string', required: true, description: "Transaction Id.", http: { source: 'path' } },
+    { arg: 'data', type: 'ChangeTransactionToAfterSalesRequest', required: true, description: "Feedback data.", http: { source: 'body' } }],
+    returns: { arg: 'resp', type: ['Transaction'], description: '', root: true },
+    http: { path: '/transaction/:transactionId/changeTransactionToAfterSales', verb: 'put', status: 200, errorStatus: 500 }
+  });
+  TransactionAPI.changeTransactionToAfterSales = function(transactionId, data){
+    var transactionService = new TransactionService();
+    let transaction;
+    data.date = moment(data.date).local();
+    return transactionService.getTransactionById(transactionId).then(result => {
+      transaction = result;
+      result.feedback = data;
+      transaction.status = "AfterSales";
+      return transactionService.updateTransaction(transactionId, transaction);
+    }).then(() => {
+      
+    })
   }
 }

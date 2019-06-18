@@ -49,7 +49,7 @@
 			"required": true
 		},
 		"comment": {
-			"type": "string"
+			"type": "Feedback"
 		},
 		"feadback": {
 			"type": "string"
@@ -61,7 +61,7 @@
 		"expectedDeliverDate": {
       "type": "string",
       "required": true
-    }
+		}
 	},
 	"validations": [],
 	"relations": {

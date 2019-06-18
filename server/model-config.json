@@ -137,6 +137,10 @@
     "dataSource": "mongo",
     "public": false
   },
+  "Feedback": {
+    "dataSource": "mongo",
+    "public": false
+  },
 
   "UpdateUserInfoRequest": {
     "dataSource": "db",
