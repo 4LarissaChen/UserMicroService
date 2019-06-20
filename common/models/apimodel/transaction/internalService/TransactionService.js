@@ -21,8 +21,8 @@ class TransactionService {
     });
   }
 
-  updateTransaction(transactionId, data) {
-    return promiseUtils.mongoNativeUpdatePromise("Transaction", { _id: transactionId }, data);
+  updateTransaction(where, data) {
+    return promiseUtils.mongoNativeUpdatePromise("Transaction", where, data);
   }
 
   getTransactionOwnerId(transactionId) {

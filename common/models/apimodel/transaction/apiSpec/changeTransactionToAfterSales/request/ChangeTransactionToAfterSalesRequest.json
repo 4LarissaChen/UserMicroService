@@ -1,5 +1,5 @@
 {
-  "name": "SearchTransactionRequest",
+  "name": "ChangeTransactionToAfterSalesRequest",
   "base": "Model",
   "idInjection": false,
   "options": {
@@ -7,17 +7,16 @@
   },
   "properties": {
     "id": false,
-    "userId": {
-      "type": "string"
+    "comment": {
+      "type": "string",
+      "required": true
     },
-    "status": {
-      "type": "any"
+    "pics": {
+      "type": ["string"]
     },
-    "fromDate":{
-      "type": "string"
-    },
-    "toDate":{
-      "type": "string"
+    "appraisal": {
+      "type": "string",
+      "required": true
     }
   },
   "validations": [],

@@ -208,6 +208,16 @@ module.exports = function (UserAPI) {
     });
   }
 
+  UserAPI.remoteMethod('getUserCount', {
+    description: "获取用户数量.",
+    returns: { arg: 'resp', type: 'number', description: 'is success or not', root: true },
+    http: { path: '/user/getUserCount', verb: 'get', status: 200, errorStatus: [500] }
+  });
+  UserAPI.getUserCount = function () {
+    let ButchartUser = loopback.findModel("ButchartUser");
+    return ButchartUser.find().then(result => ({ resp: result.length }));
+  }
+
   UserAPI.remoteMethod('setStaticData', {
     description: "Get florist.",
     accepts: [{ arg: 'modelNames', type: ['string'], required: true, description: "Model Names.", http: { source: 'body' } }],

@@ -26,8 +26,8 @@ module.exports = function (TransactionAPI) {
       createData = createData.__data;
       createData._id = apiUtils.generateShortId("transaction");
       createData.userId = userId;
-      createData.status = "unpayed";
-      createData.createDate = moment().local().format('YYYY-MM-DD HH:mm:ss');
+      createData.status = "Unpayed";
+      createData.createDate = moment().format('YYYY-MM-DD HH:mm:ss');
       createData.logistics = createData.logistics.__data;
       createData.productList = createData.productList.map(r => r.__data);
       return transactionService.createTransaction(createData);
@@ -49,7 +49,7 @@ module.exports = function (TransactionAPI) {
       updateData = updateData.__data;
       for (let key in updateData)
         result.__data[key] = updateData[key];
-      return transactionService.updateTransaction(transactionId, result.__data);
+      return transactionService.updateTransaction({ _id: transactionId }, result.__data);
     }).then(() => ({ isSuccess: true })).catch(err => {
       throw err;
     });
@@ -91,12 +91,15 @@ module.exports = function (TransactionAPI) {
     var conditions = [];
     if (filter.userId && filter.userId !== "")
       conditions.push({ userId: filter.userId });
-    if (filter.status && filter.status !== "")
+    if (filter.status) {
+      if (filter.status instanceof Array && filter.status.length && filter.status.length > 0)
+        filter.status.forEach(s => conditions.push({ status: s }));
       conditions.push({ status: filter.status });
+    }
     if (filter.fromDate && filter.fromDate !== "")
-      conditions.push({ createDate: { "$gt": moment(filter.fromDate).format('YYYY-MM-DD HH:mm:ss') } });
+      conditions.push({ createDate: { "$gt": filter.fromDate } });
     if (filter.toDate && filter.toDate !== "")
-      conditions.push({ createDate: { "$lt": moment(filter.toDate).format('YYYY-MM-DD HH:mm:ss') } })
+      conditions.push({ createDate: { "$lt": filter.toDate } })
     return Transaction.find({ where: { "$and": conditions } }).then(result => {
       return result.sort((a, b) => { a.createDate <= b.createDate });
     }).catch(err => {
@@ -122,7 +125,7 @@ module.exports = function (TransactionAPI) {
     returns: { arg: 'resp', type: ['Transaction'], description: '', root: true },
     http: { path: '/transaction/getUnassignedTransactions', verb: 'get', status: 200, errorStatus: 500 }
   });
-  TransactionAPI.getUnassignedTransactions = function(){
+  TransactionAPI.getUnassignedTransactions = function () {
     var transactionService = new TransactionService();
     return transactionService.getUnassignedTransactions().catch(err => err);
   }
@@ -131,20 +134,54 @@ module.exports = function (TransactionAPI) {
     description: "Search transactions by conditions.",
     accepts: [{ arg: 'transactionId', type: 'string', required: true, description: "Transaction Id.", http: { source: 'path' } },
     { arg: 'data', type: 'ChangeTransactionToAfterSalesRequest', required: true, description: "Feedback data.", http: { source: 'body' } }],
-    returns: { arg: 'resp', type: ['Transaction'], description: '', root: true },
+    returns: { arg: 'resp', type: 'IsSuccessResponse', description: '', root: true },
     http: { path: '/transaction/:transactionId/changeTransactionToAfterSales', verb: 'put', status: 200, errorStatus: 500 }
   });
-  TransactionAPI.changeTransactionToAfterSales = function(transactionId, data){
+  TransactionAPI.changeTransactionToAfterSales = function (transactionId, data) {
     var transactionService = new TransactionService();
     let transaction;
     data.date = moment(data.date).local();
     return transactionService.getTransactionById(transactionId).then(result => {
       transaction = result;
-      result.feedback = data;
-      transaction.status = "AfterSales";
-      return transactionService.updateTransaction(transactionId, transaction);
+      return transactionService.updateTransaction({ _id: transactionId }, { status: "AfterSales" });
     }).then(() => {
-      
+      let feedback = {
+        _id: apiUtils.generateShortId("Feedback"),
+        appraisal: data.appraisal,
+        pics: data.pics,
+        comment: data.comment,
+        beginDate: moment().local().format('YYYY-MM-DD HH:mm:ss'),
+        logistics: {
+          deliveryMethod: transaction.logistics.deliveryMethod,
+          freight: transaction.logistics.freight
+        }
+      };
+      return transactionService.updateTransaction({ _id: transactionId }, { $push: { feedback: { $each: [feedback], $sort: { beginDate: -1 } } } });
+    }).then(() => {
+      return { isSuccess: true };
+    }).catch(err => {
+      throw err;
+    });
+  }
+
+  TransactionAPI.remoteMethod('addAfterSalesLogisticsInfo', {
+    description: "Search transactions by conditions.",
+    accepts: [{ arg: 'transactionId', type: 'string', required: true, description: "Transaction Id.", http: { source: 'path' } },
+    { arg: 'trackingId', type: 'string', required: true, description: "运单号码.", http: { source: 'query' } }],
+    returns: { arg: 'resp', type: 'IsSuccessResponse', description: '', root: true },
+    http: { path: '/transaction/:transactionId/addAfterSalesLogisticsInfo', verb: 'put', status: 200, errorStatus: 500 }
+  });
+  TransactionAPI.addAfterSalesLogisticsInfo = function (transactionId, trackingId) {
+    var transactionService = new TransactionService();
+    let feedbackId;
+    return transactionService.getTransactionById(transactionId).then(result => {
+      transaction = result;
+      feedbackId = result.feedback[0]._id;
+      return transactionService.updateTransaction({ "feedback._id": feedbackId }, { trackingId: trackingId, type: "Send" });
+    }).then(() => {
+      return transactionService.updateTransaction({ "_id": transactionId }, { status: "Send" });
+    }).then(() => ({ isSuccess: true })).catch(err => {
+      throw err;
     })
   }
 }

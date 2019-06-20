@@ -1,13 +1,15 @@
 {
   "name": "Feedback",
 	"base": "PersistedModel",
-  "idInjection": false,
+  "idInjection": true,
   "strict": true,
   "options": {
     "validateUpsert": true
   },
   "properties": {
-    "id": false,
+    "_id": {
+      "type": "string"
+    },
     "comment": {
       "type": "string",
       "required": true
@@ -15,9 +17,20 @@
     "pics": {
       "type": ["string"]
     },
-    "date": {
-      "type": "date",
+    "beginDate": {
+      "type": "string",
       "required": true
+    },
+    "finishDate": {
+      "type": "string",
+      "required": true
+    },
+    "appraisal": {
+      "type": "string",
+      "required": true
+    },
+    "logistics":{
+      "type":"Logistics"
     }
   },
   "validations": [],

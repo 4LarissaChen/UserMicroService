@@ -30,16 +30,12 @@
 			"type": "string",
 			"required": true
 		},
-		"afterSalesDate": {
-			"type": "date",
-			"required": false
-		},
 		"createDate": {
-			"type": "date",
+			"type": "string",
 			"required": true
 		},
 		"finishDate": {
-			"type": "date"
+			"type": "string"
 		},
 		"payedDate": {
 			"type": "string"
@@ -49,10 +45,10 @@
 			"required": true
 		},
 		"comment": {
-			"type": "Feedback"
-		},
-		"feadback": {
 			"type": "string"
+		},
+		"feedback": {
+			"type": ["Feedback"]
 		},
 		"productList": {
 			"type": ["ShoppingCartItem"],

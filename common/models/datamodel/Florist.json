@@ -26,7 +26,7 @@
       "type": "string"
     },
     "createDate": {
-      "type": "date"
+      "type": "string"
     }
   },
   "validations": [],

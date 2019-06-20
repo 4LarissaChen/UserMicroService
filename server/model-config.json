@@ -25,6 +25,7 @@
       "../common/models/apimodel/transaction/apiSpec/createTransaction/request",
       "../common/models/apimodel/transaction/apiSpec/updateTransaction/request",
       "../common/models/apimodel/transaction/apiSpec/searchTransaction/request",
+      "../common/models/apimodel/transaction/apiSpec/changeTransactionToAfterSales/request",
       "../common/models/apimodel/address/apiSpec/addAddress/request",
       "../common/models/apimodel/address/apiSpec/modifyAddress/request",
       "../common/models/apimodel/store/apiSpec/createStore/request",
@@ -208,6 +209,10 @@
     "public": true
   },
   "IsSuccessResponse": {
+    "dataSource": "db",
+    "public": true
+  },
+  "ChangeTransactionToAfterSalesRequest": {
     "dataSource": "db",
     "public": true
   }

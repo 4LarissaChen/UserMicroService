@@ -18,6 +18,9 @@
     "freight": {
       "type": "number",
       "required": true
+    },
+    "date": {
+      "type": "string"
     }
   },
   "validations": [],
