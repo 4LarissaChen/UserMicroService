@@ -142,6 +142,10 @@
     "dataSource": "mongo",
     "public": false
   },
+  "DeliveryMethod": {
+    "dataSource": "mongo",
+    "public": false
+  },
 
   "UpdateUserInfoRequest": {
     "dataSource": "db",

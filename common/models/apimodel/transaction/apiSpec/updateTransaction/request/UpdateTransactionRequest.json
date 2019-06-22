@@ -45,8 +45,8 @@
 		"comment": {
 			"type": "string"
 		},
-		"feadback": {
-			"type": "string"
+		"feedback": {
+			"type": ["Feedback"]
 		}
   },
   "validations": [],

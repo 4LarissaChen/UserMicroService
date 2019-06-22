@@ -46,10 +46,11 @@ module.exports = function (TransactionAPI) {
   TransactionAPI.updateTransaction = function (transactionId, updateData) {
     let transactionService = new TransactionService();
     return transactionService.getTransactionById(transactionId).then(result => {
-      updateData = updateData.__data;
+      updateData = updateData.toObject();
+      result = result.toObject();
       for (let key in updateData)
-        result.__data[key] = updateData[key];
-      return transactionService.updateTransaction({ _id: transactionId }, result.__data);
+        result[key] = updateData[key];
+      return transactionService.updateTransaction({ _id: transactionId }, result);
     }).then(() => ({ isSuccess: true })).catch(err => {
       throw err;
     });
@@ -183,5 +184,15 @@ module.exports = function (TransactionAPI) {
     }).then(() => ({ isSuccess: true })).catch(err => {
       throw err;
     })
+  }
+
+  TransactionAPI.remoteMethod('getDeliveryMethods', {
+    description: "Get all delivery methods.",
+    returns: { arg: 'resp', type: ['DeliveryMethod'], description: '', root: true },
+    http: { path: '/transaction/getDeliveryMethods', verb: 'get', status: 200, errorStatus: 500 }
+  });
+  TransactionAPI.getDeliveryMethods = function () {
+    var DeliveryMethod = loopback.findModel("DeliveryMethod");
+    return DeliveryMethod.find({});
   }
 }

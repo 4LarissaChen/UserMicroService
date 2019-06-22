@@ -83,4 +83,18 @@ module.exports = function (ProductAPI) {
       throw err;
     });
   }
+
+  ProductAPI.remoteMethod('updateProducts', {
+    description: "Get product by id.",
+    returns: { arg: 'resp', type: 'IsSuccessResponse', description: '', root: true },
+    http: { path: '/productSeries/updateProducts', verb: 'post', status: 200, errorStatus: 500 }
+  });
+  ProductAPI.updateProducts = function () {
+    let Product = loopback.findModel("Product");
+    return Product.find({}).then(result => {
+      result.forEach(element => {
+        return promiseUtils.mongoNativeUpdatePromise("Product", { _id: element._id }, { type: "花束" });
+      });
+    }).then(() => ({ isSuccess: true })).catch(err => err);
+  }
 }

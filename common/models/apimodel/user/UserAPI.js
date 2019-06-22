@@ -133,7 +133,7 @@ module.exports = function (UserAPI) {
     let ButchartUser = app.models.ButchartUser;
     let item = {};
     return ButchartUser.find({ where: { _id: userId } }).then(result => {
-      result = result[0].__data;
+      result = result[0].toObject();
       if (result && result.shoppingCart.length > 0)
         result.shoppingCart.forEach(element => {
           if (element.productId == productId) {
@@ -144,7 +144,7 @@ module.exports = function (UserAPI) {
           }
         })
       if (item.productId)
-        return promiseUtils.mongoNativeUpdatePromise('ButchartUser', { _id: userId }, { $set: { shoppingCart: result.shoppingCart.map(r => r.__data) } });
+        return promiseUtils.mongoNativeUpdatePromise('ButchartUser', { _id: userId }, { $set: { shoppingCart: result.shoppingCart} });
       else
         item = {
           productId: productId,

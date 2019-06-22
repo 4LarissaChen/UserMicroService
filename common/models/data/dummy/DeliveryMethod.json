@@ -1,0 +1,24 @@
+[{
+  "deliveryMethod": "顺丰",
+  "freight": {
+    "浙江省": 20,
+    "其他省": 30
+  },
+  "config": {
+    "discount": {
+      "花束": 0,
+      "伴手礼": -5
+    }
+  }
+},
+{
+  "deliveryMethod": "自提",
+  "freight": {
+    "浙江省": 0,
+    "其他省": 0
+  },
+  "config": {
+    "discount": {
+    }
+  }
+}]
