@@ -51,6 +51,11 @@ class StoreService {
     let Store = loopback.findModel("Store");
     return Store.findOne({ where: { florists: floristId } });
   }
+
+  getStoreByManager(managerId) {
+    let Store = loopback.findModel("Store");
+    return Store.find({ where: { managerId: managerId } });
+  }
 }
 
 module.exports = StoreService;

@@ -107,5 +107,8 @@ module.exports = function (StoreAPI) {
     returns: { arg: 'resp', type: 'Store', description: '', root: true },
     http: { path: '/manager/:managerId/getStoreByManager', verb: 'get', status: 200, errorStatus: 500 }
   });
-  
+  StoreAPI.getStoreByManager = function (managerId) {
+    let storeService = new StoreService();
+    return storeService.getStoreByManager(managerId).catch(err => err);
+  }
 }

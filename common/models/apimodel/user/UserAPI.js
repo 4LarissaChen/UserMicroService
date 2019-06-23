@@ -9,26 +9,10 @@ var Promise = require('bluebird');
 var moment = require('moment');
 var errorConstants = require('../../../../server/constants/errorConstants.js');
 var UserService = require('./internalService/UserService.js');
-var messageUtils = require('../../../../server/utils/messageUtils.js');
 var promiseUtils = require('../../../../server/utils/promiseUtils.js');
 var artifactConstants = require('../../../../server/constants/apiConstants.js');
 var fs = require('fs');
 module.exports = function (UserAPI) {
-
-  UserAPI.remoteMethod('sendMessage', {
-    description: "发送验证码短信。",
-    accepts: [{ arg: 'tel', type: 'string', required: true, description: "User telephone number", http: { source: 'path' } },
-    { arg: 'operation', type: 'string', required: true, description: "login/register/changePwd/idVerification", http: { source: 'query' } }],
-    returns: { arg: 'resp', type: 'SendMessageResponse', description: '', root: true },
-    http: { path: '/user/:tel/sendMessage', verb: 'post', status: 200, errorStatus: 500 }
-  });
-  UserAPI.sendMessage = function (tel, operation, cb) {
-    let code = ("00000" + Math.floor(Math.random() * 1000000)).substr(-6);
-    return messageUtils.sendMessage(tel, code, operation).then(result => {
-      let resp = { code: code };
-      return resp;
-    });
-  };
 
   UserAPI.remoteMethod('floristRegister', {
     description: "注册花艺师账号.",
@@ -72,7 +56,7 @@ module.exports = function (UserAPI) {
       if (result.length == 0)
         return userService.createUser({ tel: tel });
       else
-        return messageUtils.querySentMessage(tel, code).then(() => result)
+        return result;
     }).then(result => {
       resp = result[0];
       return app.models.AuthorizationAPI.getButchartUserRoles(resp._id);
@@ -112,8 +96,8 @@ module.exports = function (UserAPI) {
   UserAPI.updateUserInfo = function (userId, userData) {
     let self = this;
     return self.getUserInfo(userId).then(result => {
-      let user = result.__data;
-      Object.keys(userData.__data).forEach(key => {
+      let user = apiUtils.parseToObject(result);
+      Object.keys(apiUtils.parseToObject(userData)).forEach(key => {
         user[key] = userData[key];
       });
       return promiseUtils.mongoNativeUpdatePromise("ButchartUser", { _id: userId }, user);
@@ -144,7 +128,7 @@ module.exports = function (UserAPI) {
           }
         })
       if (item.productId)
-        return promiseUtils.mongoNativeUpdatePromise('ButchartUser', { _id: userId }, { $set: { shoppingCart: result.shoppingCart} });
+        return promiseUtils.mongoNativeUpdatePromise('ButchartUser', { _id: userId }, { $set: { shoppingCart: result.shoppingCart } });
       else
         item = {
           productId: productId,
@@ -217,6 +201,17 @@ module.exports = function (UserAPI) {
     let ButchartUser = loopback.findModel("ButchartUser");
     return ButchartUser.find().then(result => ({ resp: result.length }));
   }
+
+  UserAPI.remoteMethod('deleteUserDefaultAddress', {
+    description: "Delete user's default address.",
+    accepts: [{ arg: 'userId', type: 'string', required: true, description: "User Id", http: { source: 'path' } }],
+    returns: { arg: 'resp', type: 'IsSuccessResponse', description: 'is success or not', root: true },
+    http: { path: '/user/:userId/deleteUserDefaultAddress', verb: 'delete', status: 200, errorStatus: [500] }
+  });
+  UserAPI.deleteUserDefaultAddress = function (userId) {
+    return promiseUtils.mongoNativeUpdatePromise("ButchartUser", { _id: userId }, { $unset: { "userProfile.defaultAddress": "" } });
+  }
+
 
   UserAPI.remoteMethod('setStaticData', {
     description: "Get florist.",

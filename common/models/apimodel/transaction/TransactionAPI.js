@@ -23,13 +23,13 @@ module.exports = function (TransactionAPI) {
     let ButchartUser = app.models.ButchartUser;
     return ButchartUser.count({ _id: userId }).then(result => {
       if (result == 0) throw apiUtils.build404Error(errorConstants.ERROR_MESSAGE_NO_MODEL_FOUND, "ButchartUser");
-      createData = createData.__data;
+      createData = createData.toObject();
       createData._id = apiUtils.generateShortId("transaction");
       createData.userId = userId;
       createData.status = "Unpayed";
       createData.createDate = moment().format('YYYY-MM-DD HH:mm:ss');
-      createData.logistics = createData.logistics.__data;
-      createData.productList = createData.productList.map(r => r.__data);
+      createData.logistics = createData.logistics;
+      createData.productList = createData.productList;
       return transactionService.createTransaction(createData);
     }).then(() => {
       return { createdId: createData._id };
@@ -46,10 +46,11 @@ module.exports = function (TransactionAPI) {
   TransactionAPI.updateTransaction = function (transactionId, updateData) {
     let transactionService = new TransactionService();
     return transactionService.getTransactionById(transactionId).then(result => {
-      updateData = updateData.toObject();
-      result = result.toObject();
+      updateData = apiUtils.parseToObject(updateData);
+      result = apiUtils.parseToObject(result);
       for (let key in updateData)
-        result[key] = updateData[key];
+        if (updateData[key] != null)
+          result[key] = updateData[key];
       return transactionService.updateTransaction({ _id: transactionId }, result);
     }).then(() => ({ isSuccess: true })).catch(err => {
       throw err;
@@ -88,7 +89,7 @@ module.exports = function (TransactionAPI) {
   });
   TransactionAPI.searchTransaction = function (filter) {
     var Transaction = app.models.Transaction;
-    filter = filter.__data;
+    filter = apiUtils.parseToObject(filter);
     var conditions = [];
     if (filter.userId && filter.userId !== "")
       conditions.push({ userId: filter.userId });
@@ -98,9 +99,9 @@ module.exports = function (TransactionAPI) {
       conditions.push({ status: filter.status });
     }
     if (filter.fromDate && filter.fromDate !== "")
-      conditions.push({ createDate: { "$gt": filter.fromDate } });
+      conditions.push({ createDate: { "$gte": filter.fromDate } });
     if (filter.toDate && filter.toDate !== "")
-      conditions.push({ createDate: { "$lt": filter.toDate } })
+      conditions.push({ createDate: { "$lte": filter.toDate } })
     return Transaction.find({ where: { "$and": conditions } }).then(result => {
       return result.sort((a, b) => { a.createDate <= b.createDate });
     }).catch(err => {
@@ -177,10 +178,8 @@ module.exports = function (TransactionAPI) {
     let feedbackId;
     return transactionService.getTransactionById(transactionId).then(result => {
       transaction = result;
-      feedbackId = result.feedback[0]._id;
-      return transactionService.updateTransaction({ "feedback._id": feedbackId }, { trackingId: trackingId, type: "Send" });
-    }).then(() => {
-      return transactionService.updateTransaction({ "_id": transactionId }, { status: "Send" });
+      feedbackId = apiUtils.parseToObject(result).feedback[0]._id;
+      return transactionService.updateTransaction({ "feedback._id": feedbackId }, { trackingId: trackingId, type: "Send", finishDate: moment().local().format('YYYY-MM-DD HH:mm:ss') });
     }).then(() => ({ isSuccess: true })).catch(err => {
       throw err;
     })
@@ -194,5 +193,20 @@ module.exports = function (TransactionAPI) {
   TransactionAPI.getDeliveryMethods = function () {
     var DeliveryMethod = loopback.findModel("DeliveryMethod");
     return DeliveryMethod.find({});
+  }
+
+  TransactionAPI.remoteMethod('addCommentToTransaction', {
+    description: "向Transaction添加comment.",
+    accepts: [{ arg: 'transactionId', type: 'string', required: true, description: "Transaction Id.", http: { source: 'path' } },
+    { arg: 'comment', type: 'string', required: true, description: "comment.", http: { source: 'body' } }],
+    returns: { arg: 'resp', type: 'IsSuccessResponse', description: '', root: true },
+    http: { path: '/transaction/:transactionId/addCommentToTransaction', verb: 'put', status: 200, errorStatus: 500 }
+  });
+  TransactionAPI.addCommentToTransaction = function (transactionId, comment) {
+    var transactionService = new TransactionService();
+    return transactionService.getTransactionById(transactionId).then(result => {
+      comment = apiUtils.parseToObject(commnet);
+      return transactionService.updateTransaction({ _id: transactionId }, { comment: comment });
+    });
   }
 }

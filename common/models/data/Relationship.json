@@ -62,6 +62,11 @@
     },
     {
       "from": "长木花园",
+      "to": "mini花束伴手礼(单份）",
+      "type": "INCLUDEPRODUCT"
+    },
+    {
+      "from": "长木花园",
       "to": "小蛋糕花盒",
       "type": "INCLUDEPRODUCT"
     },

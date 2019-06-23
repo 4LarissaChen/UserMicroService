@@ -26,6 +26,25 @@ exports.generateShortId = function (idPrefix) {
 	return id;
 };
 
+exports.parseToObject = function (data) {
+	if (data == null) return data;
+	if (data.__data != null)
+		data = data.__data;
+	for (let key in data) {
+		if (data[key] == null)
+			delete data[key];
+		if (typeof data[key] === "string" || typeof data[key] === "number")
+			continue;
+		if (data[key] instanceof Array)
+			for (let i = 0; i < data[key].length; i++)
+				data[key][i] = this.parseToObject(data[key][i]);
+		if (typeof (data[key]) == "object" && !(data[key] instanceof Array)) {
+			data[key] = this.parseToObject(data[key]);
+		}
+	}
+	return data;
+}
+
 /**
  * Build Error Message
  * @param {string} statusCode
