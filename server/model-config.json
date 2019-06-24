@@ -20,6 +20,7 @@
       "../common/models/apimodel/user/apiSpec/sendMessage/response",
       "../common/models/apimodel/user/apiSpec/floristRegister/request",
       "../common/models/apimodel/user/apiSpec/common/response",
+      "../common/models/apimodel/user/apiSpec/addToShoppingList/request",
       "../common/models/apimodel/transaction/apiSpec/common/response",
       "../common/models/apimodel/transaction/apiSpec/serachTransaction/request",
       "../common/models/apimodel/transaction/apiSpec/createTransaction/request",
@@ -217,6 +218,10 @@
     "public": true
   },
   "ChangeTransactionToAfterSalesRequest": {
+    "dataSource": "db",
+    "public": true
+  },
+  "AddToShoppingListRequest": {
     "dataSource": "db",
     "public": true
   }

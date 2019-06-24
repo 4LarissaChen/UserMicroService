@@ -107,23 +107,22 @@ module.exports = function (UserAPI) {
   UserAPI.remoteMethod('addToShoppingList', {
     description: "Get products by product series Id.",
     accepts: [{ arg: 'userId', type: 'string', required: true, description: "User id", http: { source: 'path' } },
-    { arg: 'productId', type: 'string', required: true, description: "Product id", http: { source: 'path' } },
-    { arg: 'quantity', type: 'number', required: true, description: "Quantity", http: { source: 'query' } },
-    { arg: 'price', type: 'number', required: true, description: "Price", http: { source: 'query' } }],
+    { arg: 'addData', type: 'AddToShoppingListRequest', required: true, description: "Add info", http: { source: 'body' } }],
     returns: { arg: 'resp', type: 'IsSuccessResponse', description: 'is success or not', root: true },
     http: { path: '/user/:userId/product/:productId/addToShoppingList', verb: 'post', status: 200, errorStatus: [500] }
   });
-  UserAPI.addToShoppingList = function (userId, productId, quantity, price) {
+  UserAPI.addToShoppingList = function (userId, addData) {
     let ButchartUser = app.models.ButchartUser;
     let item = {};
     return ButchartUser.find({ where: { _id: userId } }).then(result => {
-      result = result[0].toObject();
+      result = apiUtils.parseToObject(result[0]);
       if (result && result.shoppingCart.length > 0)
         result.shoppingCart.forEach(element => {
-          if (element.productId == productId) {
-            element.quantity += quantity;
+          if (element.productId == addData.productId) {
+            element.quantity += addData.quantity;
             element.addDate = moment().local().format('YYYY-MM-DD HH:mm:ss');
-            element.price = price;
+            element.price = addData.price;
+            element.type = addData.type;
             item = element;
           }
         })
@@ -131,8 +130,9 @@ module.exports = function (UserAPI) {
         return promiseUtils.mongoNativeUpdatePromise('ButchartUser', { _id: userId }, { $set: { shoppingCart: result.shoppingCart } });
       else
         item = {
-          productId: productId,
-          quantity: quantity,
+          productId: addData.productId,
+          quantity: addData.quantity,
+          type: addData.type,
           addDate: moment().local().format('YYYY-MM-DD HH:mm:ss')
         }
       return promiseUtils.mongoNativeUpdatePromise('ButchartUser', { _id: userId }, { $addToSet: { shoppingCart: item } });

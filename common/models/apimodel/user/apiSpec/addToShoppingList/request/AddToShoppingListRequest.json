@@ -1,8 +1,7 @@
 {
-  "name": "ShoppingCartItem",
-  "base": "PersistedModel",
-  "idInjection": true,
-  "strict": true,
+  "name": "AddToShoppingListRequest",
+  "base": "Model",
+  "idInjection": false,
   "options": {
     "validateUpsert": true
   },
@@ -12,10 +11,6 @@
       "type": "string",
       "required": true
     },
-    "addDate": {
-      "type": "string",
-      "required": false
-    },
     "quantity": {
       "type": "number",
       "required": true
@@ -24,14 +19,17 @@
       "type": "number",
       "required": true
     },
-    "type": {
+    "addDate": {
       "type": "string",
+      "required": true
+    },
+    "type": {
+      "type": "number",
       "required": true
     }
   },
   "validations": [],
   "relations": {},
   "acls": [],
-  "methods": {},
-  "mixins": {}
+  "methods": {}
 }
