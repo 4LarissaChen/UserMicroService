@@ -32,7 +32,8 @@ module.exports = function (AddressAPI) {
       street: addressData.street,
       tel: addressData.tel,
       postcode: addressData.postcode,
-      name: addressData.name
+      name: addressData.name,
+      sex: addressData.sex
     }
     return Address.upsert(addressInfo).then(() => {
       if (isDefault == true)

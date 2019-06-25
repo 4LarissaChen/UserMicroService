@@ -192,7 +192,9 @@ module.exports = function (TransactionAPI) {
   });
   TransactionAPI.getDeliveryMethods = function () {
     var DeliveryMethod = loopback.findModel("DeliveryMethod");
-    return DeliveryMethod.find({});
+    return DeliveryMethod.find({}).then(result => {
+      return apiUtils.parseToObject(result);
+    });
   }
 
   TransactionAPI.remoteMethod('addCommentToTransaction', {
