@@ -23,7 +23,7 @@ module.exports = function (TransactionAPI) {
     let ButchartUser = app.models.ButchartUser;
     return ButchartUser.count({ _id: userId }).then(result => {
       if (result == 0) throw apiUtils.build404Error(errorConstants.ERROR_MESSAGE_NO_MODEL_FOUND, "ButchartUser");
-      createData = createData.toObject();
+      createData = apiUtils.parseToObject(createData);
       createData._id = apiUtils.generateShortId("transaction");
       createData.userId = userId;
       createData.status = "Unpayed";
@@ -142,22 +142,25 @@ module.exports = function (TransactionAPI) {
   TransactionAPI.changeTransactionToAfterSales = function (transactionId, data) {
     var transactionService = new TransactionService();
     let transaction;
-    data.date = moment(data.date).local();
     return transactionService.getTransactionById(transactionId).then(result => {
       transaction = result;
-      return transactionService.updateTransaction({ _id: transactionId }, { status: "AfterSales" });
+      if (data.appraisal === "差评")
+        return transactionService.updateTransaction({ _id: transactionId }, { status: "AfterSales" });
+      return;
     }).then(() => {
       let feedback = {
         _id: apiUtils.generateShortId("Feedback"),
         appraisal: data.appraisal,
         pics: data.pics,
-        comment: data.comment,
-        beginDate: moment().local().format('YYYY-MM-DD HH:mm:ss'),
-        logistics: {
+        comment: data.comment
+      }
+      if (data.appraisal === "差评") {
+        feedback.beginDate = moment().local().format('YYYY-MM-DD HH:mm:ss');
+        feedback.logistics = {
           deliveryMethod: transaction.logistics.deliveryMethod,
           freight: transaction.logistics.freight
         }
-      };
+      }
       return transactionService.updateTransaction({ _id: transactionId }, { $push: { feedback: { $each: [feedback], $sort: { beginDate: -1 } } } });
     }).then(() => {
       return { isSuccess: true };
