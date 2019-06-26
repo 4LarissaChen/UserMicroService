@@ -32,7 +32,7 @@ class TransactionService {
 
   getUnassignedTransactions() {
     let Transaction = loopback.findModel("Transaction");
-    return Transaction.find({ where: { $and: [{ storeId: null }, { floristId: null }] } });
+    return Transaction.find({ where: { $and: [{ storeId: null }, { status: "Payed" }] } });
   }
 
 }

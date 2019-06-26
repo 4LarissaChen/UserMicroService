@@ -59,7 +59,9 @@ module.exports = function (AddressAPI) {
         district: addressData.district,
         street: addressData.street,
         tel: addressData.tel,
-        postcode: addressData.postcode
+        postcode: addressData.postcode,
+        sex: addressData.sex,
+        name: addressData.name
       }
     }).then(() => {
       if (addressData.isDefault == true)

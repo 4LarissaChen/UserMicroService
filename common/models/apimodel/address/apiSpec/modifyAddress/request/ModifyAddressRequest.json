@@ -1,7 +1,7 @@
 {
   "name": "ModifyAddressRequest",
-  "idInjection": false,
   "base": "Model",
+  "idInjection": false,
   "strict": true,
   "properties": {
 		"id": false,
@@ -9,13 +9,24 @@
 			"type": "string",
 			"required": true
 		},
-		"province": {
-			"type": "string"
+		"name": {
+			"type": "string",
+			"required": true
 		},
-		"city": {
-			"type": "string"
+		"sex": {
+			"type": "string",
+			"required": true
 		},
-		"district": {
+		"province":{
+			"type":"string"
+		},
+		"city":{
+			"type":"string"
+		},
+		"district":{
+			"type":"string"
+		},
+		"street": {
 			"type": "string"
 		},
 		"tel": {
