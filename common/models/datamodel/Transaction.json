@@ -51,7 +51,7 @@
 			"type": ["Feedback"]
 		},
 		"productList": {
-			"type": ["ShoppingCartItem"],
+			"type": ["TransactionItem"],
       "required": true
 		},
 		"expectedDeliverDate": {
