@@ -59,15 +59,22 @@ module.exports = function (TransactionAPI) {
 
   TransactionAPI.remoteMethod('getUserOwnedTransactions', {
     description: "Get user owend transactions.",
-    accepts: { arg: 'userId', type: 'string', required: true, description: "User Id", http: { source: 'path' } },
+    accepts: [{ arg: 'userId', type: 'string', required: true, description: "User Id", http: { source: 'path' } },
+    { arg: 'page', type: 'number', required: false, description: "page", http: { source: 'query' } }],
     returns: { arg: 'resp', type: ['Transaction'], description: '', root: true },
     http: { path: '/userId/:userId/getUserOwnedTransactions', verb: 'get', status: 200, errorStatus: 500 }
   });
-  TransactionAPI.getUserOwnedTransactions = function (userId) {
+  TransactionAPI.getUserOwnedTransactions = function (userId, page) {
     var Transaction = app.models.Transaction;
-    return Transaction.find({ userId: userId }).then(result => {
-      return result.sort((a, b) => a.createDate <= b.createDate);
-    })
+    let filter = {
+      where: { userId: userId },
+      order: 'createDate DESC'
+    }
+    if (page != null && page > 0) {
+      filter.limit = 10;
+      filter.skip = (page - 1) * 10;
+    }
+    return Transaction.find(filter);
   }
 
   TransactionAPI.remoteMethod('getTransactionById', {
@@ -83,11 +90,12 @@ module.exports = function (TransactionAPI) {
 
   TransactionAPI.remoteMethod('searchTransaction', {
     description: "Search transactions by conditions.",
-    accepts: [{ arg: 'filter', type: 'SearchTransactionRequest', required: true, description: "Conditions", http: { source: 'body' } }],
+    accepts: [{ arg: 'filter', type: 'SearchTransactionRequest', required: true, description: "Conditions", http: { source: 'body' } },
+    { arg: 'page', type: 'number', required: false, description: "page", http: { source: 'query' } }],
     returns: { arg: 'resp', type: ['Transaction'], description: '', root: true },
     http: { path: '/transaction/searchTransaction', verb: 'put', status: 200, errorStatus: 500 }
   });
-  TransactionAPI.searchTransaction = function (filter) {
+  TransactionAPI.searchTransaction = function (filter, page) {
     var Transaction = app.models.Transaction;
     filter = apiUtils.parseToObject(filter);
     var conditions = [];
@@ -101,10 +109,16 @@ module.exports = function (TransactionAPI) {
     if (filter.fromDate && filter.fromDate !== "")
       conditions.push({ createDate: { "$gte": filter.fromDate } });
     if (filter.toDate && filter.toDate !== "")
-      conditions.push({ createDate: { "$lte": filter.toDate } })
-    return Transaction.find({ where: { "$and": conditions } }).then(result => {
-      return result.sort((a, b) => { a.createDate <= b.createDate });
-    }).catch(err => {
+      conditions.push({ createDate: { "$lte": filter.toDate } });
+    let option = {
+      where: { "$and": conditions },
+      order: 'createDate DESC'
+    }
+    if (page != null && page > 0) {
+      option.limit = 10;
+      option.skip = (page - 1) * 10;
+    }
+    return Transaction.find(option).catch(err => {
       throw err;
     });
   }
