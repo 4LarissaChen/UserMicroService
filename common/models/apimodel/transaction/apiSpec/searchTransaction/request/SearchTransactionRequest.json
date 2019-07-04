@@ -10,6 +10,12 @@
     "userId": {
       "type": "string"
     },
+    "floristId": {
+      "type": "string"
+    },
+    "storeId": {
+      "type": "string"
+    },
     "status": {
       "type": "any"
     },
