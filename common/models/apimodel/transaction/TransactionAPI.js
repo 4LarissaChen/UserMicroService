@@ -96,39 +96,22 @@ module.exports = function (TransactionAPI) {
     http: { path: '/transaction/searchTransaction', verb: 'put', status: 200, errorStatus: 500 }
   });
   TransactionAPI.searchTransaction = function (filter, page) {
-    var Transaction = app.models.Transaction;
-    filter = apiUtils.parseToObject(filter);
-    var conditions = [];
-    if (filter.userId && filter.userId !== "")
-      conditions.push({ userId: filter.userId });
-    if (filter.floristId && filter.floristId !== "")
-      conditions.push({ floristId: filter.floristId });
-    if (filter.storeId && filter.storeId !== "")
-      conditions.push({ storeId: storeId });
-    if (filter.status) {
-      if (filter.status instanceof Array && filter.status.length && filter.status.length > 0)
-        filter.status.forEach(s => conditions.push({ status: s }));
-      conditions.push({ status: filter.status });
-    }
-    if (filter.fromDate && filter.fromDate !== "")
-      conditions.push({ createDate: { "$gte": filter.fromDate } });
-    if (filter.fromDate == null)
-      conditions.push({ createDate: { "$gte": '2019-01-01 00:00:00' } });
-    if (filter.toDate && filter.toDate !== "")
-      conditions.push({ createDate: { "$lte": filter.toDate } });
-    if (filter.toDate == null)
-      conditions.push({ createDate: { "$lte": moment().local().format('YYYY-MM-DD HH:mm:ss') } });
-    let option = {
-      where: { "$and": conditions },
-      order: 'createDate DESC'
-    }
-    if (page != null && page > 0) {
-      option.limit = 10;
-      option.skip = (page - 1) * 10;
-    }
-    return Transaction.find(option).catch(err => {
+    var transactionService = new TransactionService();
+    return transactionService.searchTransactions(filter, page);
+  }
+
+  TransactionAPI.remoteMethod('searchTransactionWithAddress', {
+    description: "Search transactions by conditions.",
+    accepts: [{ arg: 'filter', type: 'SearchTransactionRequest', required: true, description: "Conditions", http: { source: 'body' } },
+    { arg: 'page', type: 'number', required: false, description: "page", http: { source: 'query' } }],
+    returns: { arg: 'resp', type: ['Transaction'], description: '', root: true },
+    http: { path: '/transaction/searchTransactionWithAddress', verb: 'put', status: 200, errorStatus: 500 }
+  });
+  TransactionAPI.searchTransactionWithAddress = function (filter, page) {
+    var transactionService = new TransactionService();
+    return transactionService.searchTransactionsWithAddress(filter, page).catch(err => {
       throw err;
-    });
+    })
   }
 
   TransactionAPI.remoteMethod('getTransactionOwnerId', {
