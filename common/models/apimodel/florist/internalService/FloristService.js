@@ -9,7 +9,7 @@ var errorConstants = require('../../../../../server/constants/errorConstants.js'
 class FloristService {
   updateCustomerPool(floristId, customerId) {
     let Florist = loopback.findModel("Florist");
-    return Florist.find({ where: { "userId": customerId } }).then(result => {
+    return Florist.find({ where: { "userId": floristId } }).then(result => {
       if (!result)
         throw apiUtils.build404Error(nodeUtil.format(errorConstants.ERROR_MESSAGE_NO_MODEL_FOUND, 'Florist'));
       return promiseUtils.mongoNativeUpdatePromise('Florist', { customerPool: customerId }, { $pull: { customerPool: customerId } });
@@ -20,7 +20,12 @@ class FloristService {
     })
   }
 
-  getFloristList(){
+  getCustomerPool(floristId) {
+    let Florist = loopback.findModel("Florist");
+    return Florist.findOne({ where: { "userId": floristId }, fields: { "customerPool": true } });
+  }
+
+  getFloristList() {
     let Florist = loopback.findModel("Florist");
     return Florist.find();
   }

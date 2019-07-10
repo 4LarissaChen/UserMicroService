@@ -60,6 +60,17 @@ module.exports = function (FloristAPI) {
     });
   }
 
+  FloristAPI.remoteMethod('getCustomerPool', {
+    description: "Get florist's customer pool.",
+    accepts: [{ arg: 'floristId', type: 'string', required: true, description: "Florist Id", http: { source: 'path' } }],
+    returns: { arg: 'customerPool', type: ['string'], description: 'is success or not', root: true },
+    http: { path: '/florist/:floristId/customerPool', verb: 'get', status: 200, errorStatus: [500] }
+  });
+  FloristAPI.getCustomerPool = function (floristId) {
+    let floristService = new FloristService();
+    return floristService.getCustomerPool(floristId).catch(err => err);
+  }
+
   FloristAPI.remoteMethod('getFloristList', {
     description: "Get All Florist.",
     returns: { arg: 'resp', type: ['Florist'], description: '', root: true },
