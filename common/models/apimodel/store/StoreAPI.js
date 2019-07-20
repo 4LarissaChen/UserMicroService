@@ -42,7 +42,9 @@ module.exports = function (StoreAPI) {
   });
   StoreAPI.updateStore = function (storeId, updateData) {
     let storeService = new StoreService();
-    return storeService.updateStore(updateData);
+    return storeService.updateStore(updateData).catch(err => {
+      throw err;
+    });
   }
 
   StoreAPI.remoteMethod('getStoreById', {
