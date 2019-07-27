@@ -1,6 +1,7 @@
 'use strict'
 var shortid = require('shortid');
 var errorConstants = require('../constants/errorConstants.js');
+var moment = require('moment');
 
 exports.disableRelatedModelRemoteMethod = function (model) {
 	var keys = Object.keys(model.definition.settings.relations);
@@ -21,8 +22,17 @@ exports.disableRelatedModelRemoteMethod = function (model) {
 }
 
 exports.generateShortId = function (idPrefix) {
-	var prefix = idPrefix ? idPrefix.toLowerCase() + '_' : '';
-	var id = prefix + shortid.generate();
+	var id = "";
+	if (idPrefix.toLowerCase() == 'transaction') {
+		for (var i = 0; i < 6; i++) //6位随机数，用以加在时间戳后面。
+		{
+			id += Math.floor(Math.random() * 10);
+		}
+		id = moment().unix() + id;
+	} else {
+		var prefix = idPrefix ? idPrefix.toLowerCase() + '_' : '';
+		id = prefix + shortid.generate();
+	}
 	return id;
 };
 
