@@ -1,24 +1,39 @@
-[{
-  "deliveryMethod": "顺丰",
-  "freight": {
-    "浙江省": 20,
-    "其他省": 30
+[
+  {
+    "deliveryMethod": "顺丰",
+    "freight": {
+      "浙江省": 20,
+      "其他省": 30
+    },
+    "config": {
+      "discount": {
+        "花束": 0,
+        "伴手礼_单数": -5
+      }
+    }
   },
-  "config": {
-    "discount": {
-      "花束": 0,
-      "伴手礼_单数": -5
+  {
+    "deliveryMethod": "自提",
+    "freight": {
+      "浙江省": 0,
+      "其他省": 0
+    },
+    "config": {
+      "discount": {}
+    }
+  },
+  {
+    "deliveryMethod": "专人配送",
+    "freight": {
+      "上城区": 20,
+      "下城区": 20,
+      "江干区": 20,
+      "拱墅区": 20,
+      "西湖区": 20,
+      "滨江区": 20
+    },
+    "config": {
+      "discount": {}
     }
   }
-},
-{
-  "deliveryMethod": "自提",
-  "freight": {
-    "浙江省": 0,
-    "其他省": 0
-  },
-  "config": {
-    "discount": {
-    }
-  }
-}]
+]
