@@ -74,7 +74,24 @@ module.exports = function (TransactionAPI) {
       filter.limit = 10;
       filter.skip = (page - 1) * 10;
     }
-    return Transaction.find(filter);
+    return Transaction.find(filter).then(result => {
+      let Address = loopback.findModel("Address");
+      let Store = loopback.findModel("Store");
+      return Promise.map(result, tran => {
+        return new Promise((resolve, reject) => {
+          if (tran.addressId)
+            return resolve(Address.findOne({ where: { _id: tran.addressId } }));
+          else if (tran.addressId == null && tran.logistics.deliveryMethod == "自取")
+            return resolve(Store.findOne({ where: { _id: tran.storeId }, fields: { province: true, city: true, street: true, name: true } }));
+          else
+            return reject();
+        }).then(result => {
+          tran.address = result;
+          delete tran.addressId
+          return tran;
+        });
+      });
+    });
   }
 
   TransactionAPI.remoteMethod('getTransactionById', {
