@@ -28,20 +28,23 @@
 			"type": "string",
 			"required": true
 		},
-		"province":{
-			"type":"string"
+		"province": {
+			"type": "string"
 		},
-		"city":{
-			"type":"string"
+		"city": {
+			"type": "string"
 		},
-		"district":{
-			"type":"string"
+		"district": {
+			"type": "string"
 		},
 		"street": {
 			"type": "string"
 		},
 		"postcode": {
 			"type": "string"
+		},
+		"isDeleted": {
+			"type": "number"
 		}
 	},
 	"validations": [],

@@ -61,7 +61,8 @@ module.exports = function (AddressAPI) {
         tel: addressData.tel,
         postcode: addressData.postcode,
         sex: addressData.sex,
-        name: addressData.name
+        name: addressData.name,
+        isDeleted: 0
       }
     }).then(() => {
       if (addressData.isDefault == true)
@@ -79,7 +80,13 @@ module.exports = function (AddressAPI) {
     http: { path: '/address/user/:userId/getAddress', verb: 'get', status: 200, errorStatus: 500 }
   });
   AddressAPI.getAddress = function (userId) {
-    return addressService.getAddress(userId);
+    return addressService.getAddress(userId).then(result => {
+      return result.map(r => {
+        r = apiUtils.parseToObject(r);
+        delete r.isDeleted;
+        return r;
+      })
+    });
   }
 
   AddressAPI.remoteMethod('deleteAddress', {
@@ -89,8 +96,7 @@ module.exports = function (AddressAPI) {
     http: { path: '/address/addressId/:addressId/deleteAddress', verb: 'delete', status: 200, errorStatus: 500 }
   })
   AddressAPI.deleteAddress = function (addressId) {
-    var Address = loopback.findModel("Address");
-    return Address.destroyAll({ _id: addressId });
+    return promiseUtils.mongoNativeUpdatePromise("Address", { _id: addressId }, { isDeleted: 1 });
   }
 
   AddressAPI.remoteMethod('getAddressById', {
@@ -101,6 +107,6 @@ module.exports = function (AddressAPI) {
   });
   AddressAPI.getAddressById = function (addressId) {
     var Address = loopback.findModel("Address");
-    return Address.find({ where: { _id: addressId } });
+    return Address.find({ where: { _id: addressId, isDeleted: 0 }, fields: { isDeleted: false } });
   }
 }
