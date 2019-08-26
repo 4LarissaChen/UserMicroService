@@ -81,7 +81,7 @@ class TransactionService {
           if (tran.addressId)
             return resolve(Address.findOne({ where: { _id: tran.addressId } }));
           else if (tran.addressId == null && tran.logistics.deliveryMethod == "自取")
-            return resolve(Store.findOne({ where: { _id: tran.storeId }, fields: { province: true, city: true, street: true, name: true } }));
+            return resolve(Store.findOne({ where: { _id: tran.storeId }, fields: { province: true, city: true, street: true, name: true , _id: true} }));
           else
             return reject();
         }).then(result => {
