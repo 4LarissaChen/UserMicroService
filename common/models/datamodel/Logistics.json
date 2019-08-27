@@ -22,7 +22,7 @@
     },
     "pics": {
       "type": ["string"],
-      "required": true
+      "required": false
     },
     "date": {
       "type": "string"
