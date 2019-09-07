@@ -123,6 +123,10 @@
     "dataSource": "db",
     "public": true
   },
+  "WechatPayInfo": {
+    "dataSource": "db",
+    "public": true
+  },
   "Logistics": {
     "dataSource": "db",
     "public": true

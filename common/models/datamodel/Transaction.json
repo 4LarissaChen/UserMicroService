@@ -47,6 +47,9 @@
 		"comment": {
 			"type": "string"
 		},
+		"payInfo": {
+			"type": "WechatPayInfo"
+		},
 		"feedback": {
 			"type": ["Feedback"]
 		},
