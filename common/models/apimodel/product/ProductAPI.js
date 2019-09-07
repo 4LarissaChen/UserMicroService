@@ -29,14 +29,13 @@ module.exports = function (ProductAPI) {
     http: { path: '/store/createProduct', verb: 'post', status: 200, errorStatus: 500 }
   });
   ProductAPI.createProduct = function (createData) {
-    let ProductSeries = loopback.findModel("ProductSeries");
     let Product = loopback.findModel("Product");
-
+    createData = apiUtils.parseToObject(createData);
     createData._id = apiUtils.generateShortId("Product");
     let seriesId = createData.seriesId;
     delete createData.seriesId;
     return Product.create(createData).then(() => {
-      return promiseUtils.mongoNativeUpdatePromise("ProductSeries", { "_id": ProductSeries }, { $addToSet: { includeProducts: seriesId } });
+      return promiseUtils.mongoNativeUpdatePromise("ProductSeries", { "_id": seriesId }, { $addToSet: { includeProducts: createData._id } });
     }).catch(err => {
       throw err;
     })

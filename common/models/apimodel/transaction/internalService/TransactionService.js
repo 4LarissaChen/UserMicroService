@@ -32,7 +32,7 @@ class TransactionService {
 
   getUnassignedTransactions() {
     let Transaction = loopback.findModel("Transaction");
-    return Transaction.find({ where: { $and: [{ storeId: null }, { status: "Payed" }] } });
+    return Transaction.find({ where: { $and: [{ storeId: null }, { status: "Payed" }] }});
   }
 
   searchTransactions(filter, page) {
@@ -81,7 +81,7 @@ class TransactionService {
           if (tran.addressId)
             return resolve(Address.findOne({ where: { _id: tran.addressId } }));
           else if (tran.addressId == null && tran.logistics.deliveryMethod == "自取")
-            return resolve(Store.findOne({ where: { _id: tran.storeId }, fields: { province: true, city: true, street: true, name: true , _id: true} }));
+            return resolve(Store.findOne({ where: { _id: tran.storeId }, fields: { province: true, city: true, street: true, name: true, _id: true } }));
           else
             return reject();
         }).then(result => {

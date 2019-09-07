@@ -30,6 +30,9 @@
     "type": {
       "type": "string",
       "required": true
+    },
+    "pics": {
+      "type": ["string"]
     }
   },
   "validations": [],

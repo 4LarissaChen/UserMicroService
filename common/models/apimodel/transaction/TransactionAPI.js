@@ -225,15 +225,15 @@ module.exports = function (TransactionAPI) {
   TransactionAPI.remoteMethod('addCommentToTransaction', {
     description: "向Transaction添加comment.",
     accepts: [{ arg: 'transactionId', type: 'string', required: true, description: "Transaction Id.", http: { source: 'path' } },
-    { arg: 'comment', type: 'string', required: true, description: "comment.", http: { source: 'body' } }],
+    { arg: 'comment', type: 'string', required: true, description: "comment.", http: { source: 'query' } }],
     returns: { arg: 'resp', type: 'IsSuccessResponse', description: '', root: true },
     http: { path: '/transaction/:transactionId/addCommentToTransaction', verb: 'put', status: 200, errorStatus: 500 }
   });
   TransactionAPI.addCommentToTransaction = function (transactionId, comment) {
     var transactionService = new TransactionService();
     return transactionService.getTransactionById(transactionId).then(result => {
-      comment = apiUtils.parseToObject(commnet);
-      return transactionService.updateTransaction({ _id: transactionId }, { comment: comment });
+      comment = apiUtils.parseToObject(comment);
+      return transactionService.updateTransaction({ _id: transactionId }, { afterSalesComment: comment });
     });
   }
 }
