@@ -52,7 +52,7 @@ module.exports = function (UserAPI) {
     let resp;
     if (!telReg.test(tel))
       throw apiUtils.build500Error(errorConstants.ERROR_NAME_INVALID_INPUT_PARAMETERS, "Phone number is invalid!");
-    return ButchartUser.find({ where: { tel: tel }, fields: { openId: false } }).then(result => {
+    return ButchartUser.find({ where: { tel: tel } }).then(result => {
       if (result.length == 0)
         return userService.createUser({ tel: tel });
       else
@@ -83,7 +83,7 @@ module.exports = function (UserAPI) {
   });
   UserAPI.getUserInfo = function (userId) {
     let ButchartUser = app.models.ButchartUser;
-    return ButchartUser.findOne({ where: { _id: userId }, fields: { openId: false } }).catch(err => err);
+    return ButchartUser.findOne({ where: { _id: userId } }).catch(err => err);
   }
 
   UserAPI.remoteMethod('updateUserInfo', {
