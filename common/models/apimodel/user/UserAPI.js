@@ -52,7 +52,7 @@ module.exports = function (UserAPI) {
     let resp;
     if (!telReg.test(tel))
       throw apiUtils.build500Error(errorConstants.ERROR_NAME_INVALID_INPUT_PARAMETERS, "Phone number is invalid!");
-    return ButchartUser.find({ where: { tel: tel } }).then(result => {
+    return ButchartUser.find({ where: { tel: tel }, fields: { openId: false } }).then(result => {
       if (result.length == 0)
         return userService.createUser({ tel: tel });
       else
@@ -83,7 +83,7 @@ module.exports = function (UserAPI) {
   });
   UserAPI.getUserInfo = function (userId) {
     let ButchartUser = app.models.ButchartUser;
-    return ButchartUser.findOne({ where: { _id: userId } }).catch(err => err);
+    return ButchartUser.findOne({ where: { _id: userId }, fields: { openId: false } }).catch(err => err);
   }
 
   UserAPI.remoteMethod('updateUserInfo', {
@@ -241,6 +241,39 @@ module.exports = function (UserAPI) {
           })
         })
       })
+    })
+  }
+
+  UserAPI.remoteMethod('setUserOpenId', {
+    description: "Set user's openId.",
+    accepts: [{ arg: 'userId', type: 'string', required: true, description: "User id.", http: { source: 'path' } },
+    { arg: 'openId', type: 'string', required: true, description: "User openId.", http: { source: 'query' } }],
+    returns: { arg: 'resp', type: 'IsSuccessResponse', description: '', root: true },
+    http: { path: '/user/:userId/setUserOpenId', verb: 'put', status: 200, errorStatus: [500] }
+  });
+  UserAPI.setUserOpenId = function (userId, openId) {
+    var ButchartUser = loopback.findModel("ButchartUser");
+    return ButchartUser.findOne({ where: { _id: userId } }).then(result => {
+      if (result == null)
+        throw apiUtils.build404Error(nodeUtil.format(errorConstants.ERROR_MESSAGE_NO_MODEL_FOUND, "ButchartUser"));
+      return promiseUtils.mongoNativeUpdatePromise("ButchartUser", { _id: userId }, { openId: openId });
+    }).then(result => {
+      return { isSuccess: true };
+    });
+  }
+
+  UserAPI.remoteMethod('getUserOpenId', {
+    description: "Get user's openId.",
+    accepts: [{ arg: 'userId', type: 'string', required: true, description: "User id.", http: { source: 'path' } }],
+    returns: { arg: 'resp', type: 'IsSuccessResponse', description: '', root: true },
+    http: { path: '/user/:userId/openId', verb: 'get', status: 200, errorStatus: [500] }
+  });
+  UserAPI.getUserOpenId = function (userId) {
+    var ButchartUser = loopback.findModel("ButchartUser");
+    return ButchartUser.findOne({ where: { _id: userId } }).then(result => {
+      if (result == null)
+        throw apiUtils.build404Error(nodeUtil.format(errorConstants.ERROR_MESSAGE_NO_MODEL_FOUND, "ButchartUser"));
+      return { openId: result.openId };
     })
   }
 }; 

@@ -43,6 +43,10 @@
 		"registerDate": {
 			"type": "string",
 			"required": false
+		},
+		"openId": {
+			"type": "string",
+			"required": false
 		}
 	},
 	"validations": [],
