@@ -22,7 +22,7 @@ class TransactionService {
   }
 
   updateTransaction(where, data) {
-    return promiseUtils.mongoNativeUpdatePromise("Transaction", where, data);
+    return promiseUtils.mongoNativeUpdatePromise("Transaction", where, { $set: data });
   }
 
   getTransactionOwnerId(transactionId) {
@@ -32,7 +32,7 @@ class TransactionService {
 
   getUnassignedTransactions() {
     let Transaction = loopback.findModel("Transaction");
-    return Transaction.find({ where: { $and: [{ storeId: null }, { status: "Payed" }] }});
+    return Transaction.find({ where: { $and: [{ storeId: null }, { status: "Payed" }] } });
   }
 
   searchTransactions(filter, page) {

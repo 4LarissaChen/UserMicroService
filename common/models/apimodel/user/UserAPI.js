@@ -100,7 +100,7 @@ module.exports = function (UserAPI) {
       Object.keys(apiUtils.parseToObject(userData)).forEach(key => {
         user[key] = userData[key];
       });
-      return promiseUtils.mongoNativeUpdatePromise("ButchartUser", { _id: userId }, user);
+      return promiseUtils.mongoNativeUpdatePromise("ButchartUser", { _id: userId }, { $set: user });
     })
   }
 
@@ -256,7 +256,7 @@ module.exports = function (UserAPI) {
     return ButchartUser.findOne({ where: { _id: userId } }).then(result => {
       if (result == null)
         throw apiUtils.build404Error(nodeUtil.format(errorConstants.ERROR_MESSAGE_NO_MODEL_FOUND, "ButchartUser"));
-      return promiseUtils.mongoNativeUpdatePromise("ButchartUser", { _id: userId }, { openId: openId });
+      return promiseUtils.mongoNativeUpdatePromise("ButchartUser", { _id: userId }, { $set: { openId: openId } });
     }).then(result => {
       return { isSuccess: true };
     });

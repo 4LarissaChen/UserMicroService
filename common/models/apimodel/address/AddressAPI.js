@@ -96,7 +96,7 @@ module.exports = function (AddressAPI) {
     http: { path: '/address/addressId/:addressId/deleteAddress', verb: 'delete', status: 200, errorStatus: 500 }
   })
   AddressAPI.deleteAddress = function (addressId) {
-    return promiseUtils.mongoNativeUpdatePromise("Address", { _id: addressId }, { isDeleted: 1 });
+    return promiseUtils.mongoNativeUpdatePromise("Address", { _id: addressId }, { $set: { isDeleted: 1 } });
   }
 
   AddressAPI.remoteMethod('getAddressById', {

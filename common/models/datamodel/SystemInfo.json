@@ -1,0 +1,26 @@
+{
+	"name": "SystemInfo",
+	"base": "PersistedModel",
+	"strict": true,
+	"idInjection": true,
+	"options": {
+		"validateUpsert": true
+	},
+	"properties": {
+		"_id": {
+			"type": "string",
+			"id": true,
+			"required": true
+		},
+		"access_token": {
+			"type": "string"
+		},
+		"access_token_date": {
+			"type": "string"
+		}
+	},
+	"validations": [],
+	"relations": {},
+	"acls": [],
+	"methods": {}
+}

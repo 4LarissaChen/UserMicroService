@@ -92,7 +92,7 @@ module.exports = function (ProductAPI) {
     let Product = loopback.findModel("Product");
     return Product.find({}).then(result => {
       result.forEach(element => {
-        return promiseUtils.mongoNativeUpdatePromise("Product", { _id: element._id }, { type: "花束" });
+        return promiseUtils.mongoNativeUpdatePromise("Product", { _id: element._id }, { $set: { type: "花束" } });
       });
     }).then(() => ({ isSuccess: true })).catch(err => err);
   }

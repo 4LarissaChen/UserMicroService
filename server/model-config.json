@@ -14,6 +14,7 @@
       "../common/models/apimodel/store",
       "../common/models/apimodel/product",
       "../common/models/apimodel/florist",
+      "../common/models/apimodel/system",
       "../common/models/apimodel/auth/apiSpec/assignRoleToButchartUser/response",
       "../common/models/apimodel/auth/apiSpec/unAssignRoleToButchartUser/response",
       "../common/models/apimodel/user/apiSpec/updateUserInfo/request",
@@ -93,6 +94,10 @@
     "dataSource": "db",
     "public": true
   },
+  "SystemAPI": {
+    "dataSource": "db",
+    "public": true
+  },
   "UserProfile": {
     "dataSource": "db",
     "public": true
@@ -116,6 +121,10 @@
     "public": false
   },
   "Florist": {
+    "dataSource": "mongo",
+    "public": false
+  },
+  "SystemInfo": {
     "dataSource": "mongo",
     "public": false
   },
