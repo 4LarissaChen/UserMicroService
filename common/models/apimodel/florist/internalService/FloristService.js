@@ -22,7 +22,9 @@ class FloristService {
 
   getCustomerPool(floristId) {
     let Florist = loopback.findModel("Florist");
-    return Florist.findOne({ where: { "userId": floristId }, fields: { "customerPool": true } });
+    return Florist.findOne({ where: { "userId": floristId }, fields: { "customerPool": true } }).then(result => {
+      return result == null ? { customerPool: [] } : result;
+    });
   }
 
   getFloristList() {
