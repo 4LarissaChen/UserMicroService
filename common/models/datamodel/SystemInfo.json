@@ -17,6 +17,9 @@
 		},
 		"access_token_date": {
 			"type": "string"
+		},
+		"homePagePics":{
+			"type": "object"
 		}
 	},
 	"validations": [],

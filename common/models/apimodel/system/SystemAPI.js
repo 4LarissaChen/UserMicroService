@@ -32,4 +32,16 @@ module.exports = function (SystemAPI) {
       return { isSuccess: true };
     })
   }
+
+  SystemAPI.remoteMethod('getHomePagePics', {
+    description: "Get Home Page Pics.",
+    returns: { arg: 'resp', type: 'IsSuccessResponse', description: '', root: true },
+    http: { path: '/system/getHomePagePics', verb: 'get', status: 200, errorStatus: 500 }
+  });
+  SystemAPI.getHomePagePics = function () {
+    let SystemInfo = loopback.findModel("SystemInfo");
+    return SystemInfo.findOne({ fields: { homePagePics: true } }).then(result => {
+      return result;
+    })
+  }
 }
