@@ -59,7 +59,9 @@ module.exports = function (UserAPI) {
         return result;
     }).then(result => {
       resp = result[0];
-      return app.models.AuthorizationAPI.getButchartUserRoles(resp._id);
+      if (resp._id == null)
+        throw apiUtils.build404Error(nodeUtil.format(errorConstants.ERROR_MESSAGE_NO_MODEL_FOUND, "ButchartUser"));
+      return AuthorizationAPI.getButchartUserRoles(resp._id);
     }).then(result => {
       resp.roles = result;
       return AccessToken.destroyAll({ "userId": tel }).then(() => {
@@ -83,7 +85,12 @@ module.exports = function (UserAPI) {
   });
   UserAPI.getUserInfo = function (userId) {
     let ButchartUser = app.models.ButchartUser;
-    return ButchartUser.findOne({ where: { _id: userId } }).catch(err => err);
+    return ButchartUser.findOne({ where: { _id: userId } }).then(result => {
+      if (result && result._id && result._id != "")
+        return result;
+      else
+        throw apiUtils.build404Error(nodeUtil.format(errorConstants.ERROR_MESSAGE_NO_MODEL_FOUND, "ButchartUser"));
+    });
   }
 
   UserAPI.remoteMethod('updateUserInfo', {
