@@ -54,7 +54,7 @@ module.exports = function (UserAPI) {
       throw apiUtils.build500Error(errorConstants.ERROR_NAME_INVALID_INPUT_PARAMETERS, "Phone number is invalid!");
     return ButchartUser.find({ where: { tel: tel } }).then(result => {
       if (result.length == 0)
-        return userService.createUser({ tel: tel });
+        return userService.createUser({ tel: tel }).then(result => [result]);
       else
         return result;
     }).then(result => {
