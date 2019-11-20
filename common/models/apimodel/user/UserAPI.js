@@ -85,12 +85,7 @@ module.exports = function (UserAPI) {
   });
   UserAPI.getUserInfo = function (userId) {
     let ButchartUser = app.models.ButchartUser;
-    return ButchartUser.findOne({ where: { _id: userId } }).then(result => {
-      if (result && result._id && result._id != "")
-        return result;
-      else
-        throw apiUtils.build404Error(nodeUtil.format(errorConstants.ERROR_MESSAGE_NO_MODEL_FOUND, "ButchartUser"));
-    });
+    return ButchartUser.findOne({ where: { _id: userId } }).catch(err => err);
   }
 
   UserAPI.remoteMethod('updateUserInfo', {
